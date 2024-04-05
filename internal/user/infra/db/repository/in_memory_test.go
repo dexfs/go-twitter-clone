@@ -57,9 +57,9 @@ func TestShouldRemoveUserByID(t *testing.T) {
 
 	userRepo.Remove(userToDelete)
 
-	findByUserRemoved, error := userRepo.ByUsername(userToDelete.Username)
+	findByUserRemoved, err := userRepo.ByUsername(userToDelete.Username)
 
-	if error == nil {
+	if err == nil {
 		t.Errorf("got %v want nil", findByUserRemoved)
 	}
 }
