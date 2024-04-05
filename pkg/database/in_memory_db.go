@@ -1,11 +1,13 @@
 package database
 
+import "slices"
+
 type InMemoryDB[T any] struct {
 	data []*T
 }
 
 func (db *InMemoryDB[T]) Insert(item *T) {
-	db.data = append(db.data, item)
+	db.data = slices.Insert(db.data, len(db.data), item)
 }
 
 func (db *InMemoryDB[T]) GetAll() []*T {
@@ -15,7 +17,7 @@ func (db *InMemoryDB[T]) GetAll() []*T {
 func (db *InMemoryDB[T]) Remove(item *T) {
 	for i, v := range db.data {
 		if v == item {
-			db.data = append(db.data[:i], db.data[i+1:]...)
+			db.data = slices.Delete(db.data, i, i+1)
 			return
 		}
 	}
