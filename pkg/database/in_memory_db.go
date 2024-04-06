@@ -1,8 +1,11 @@
 package database
 
-import "slices"
+import (
+	"slices"
+)
 
 type InMemoryDB[T any] struct {
+	BaseDb[T]
 	data []*T
 }
 
@@ -18,6 +21,15 @@ func (db *InMemoryDB[T]) Remove(item *T) {
 	for i, v := range db.data {
 		if v == item {
 			db.data = slices.Delete(db.data, i, i+1)
+			return
+		}
+	}
+}
+
+func (db *InMemoryDB[T]) Update(item *T) {
+	for i, v := range db.data {
+		if v == item {
+			db.data = slices.Replace(db.data, i, i+1, item)
 			return
 		}
 	}
