@@ -51,7 +51,11 @@ func TestShouldFindAPostByID(t *testing.T) {
 		t.Errorf("got %v want no empty", post)
 	}
 
-	if post.ID != newPost.ID {
+	if post == nil {
+		t.Errorf("got nil want post")
+	}
+
+	if newPost.ID != post.ID {
 		t.Errorf("got %v want %v", post.ID, newPost.ID)
 	}
 
