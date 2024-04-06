@@ -34,6 +34,17 @@ func (p *PostDb) CountByUser(userId string) Count {
 	return count
 }
 
+func (p *PostDb) HasPostBeenRepostedByUser(postID string, userID string) bool {
+	for _, vPost := range p.db.GetAll() {
+		if vPost.IsRepost {
+			if vPost.User.ID == userID && vPost.OriginalPostID == postID {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (p *PostDb) Insert(item *postEntity.Post) {
 	p.db.Insert(item)
 }
