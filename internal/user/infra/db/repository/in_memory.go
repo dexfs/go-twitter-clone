@@ -2,21 +2,21 @@ package repository
 
 import (
 	"errors"
-	user_domain "github.com/dexfs/go-twitter-clone/internal/user/domain"
+	"github.com/dexfs/go-twitter-clone/internal/user"
 	"github.com/dexfs/go-twitter-clone/pkg/database"
 )
 
 type UserDb struct {
-	db *database.InMemoryDB[user_domain.User]
+	db *database.InMemoryDB[user.User]
 }
 
-func NewUserInMemoryRepo(db *database.InMemoryDB[user_domain.User]) *UserDb {
+func NewUserInMemoryRepo(db *database.InMemoryDB[user.User]) *UserDb {
 	return &UserDb{
 		db: db,
 	}
 }
 
-func (u *UserDb) ByUsername(username string) (*user_domain.User, error) {
+func (u *UserDb) ByUsername(username string) (*user.User, error) {
 	for _, user := range u.db.GetAll() {
 		if user.Username == username {
 			return user, nil
@@ -26,14 +26,14 @@ func (u *UserDb) ByUsername(username string) (*user_domain.User, error) {
 	return nil, errors.New("user not found")
 }
 
-func (u *UserDb) Insert(item *user_domain.User) {
+func (u *UserDb) Insert(item *user.User) {
 	u.db.Insert(item)
 }
 
-func (u *UserDb) GetAll() []*user_domain.User {
+func (u *UserDb) GetAll() []*user.User {
 	return u.db.GetAll()
 }
 
-func (u *UserDb) Remove(item *user_domain.User) {
+func (u *UserDb) Remove(item *user.User) {
 	u.db.Remove(item)
 }

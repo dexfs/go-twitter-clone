@@ -1,12 +1,12 @@
-package domain
+package posts
 
 import (
-	"github.com/dexfs/go-twitter-clone/internal/user/domain"
+	"github.com/dexfs/go-twitter-clone/internal/user"
 	"testing"
 )
 
 func TestShouldInitializeAPostCorrectly(t *testing.T) {
-	user := domain.NewUser("user post 1")
+	user := user.NewUser("user post 1")
 	mockInput := NewPostInput{User: user, Content: "mock_content"}
 	newPost := NewPost(mockInput)
 
@@ -31,8 +31,8 @@ func TestShouldInitializeAPostCorrectly(t *testing.T) {
 }
 
 func TestShouldInitializeARepostCorrectly(t *testing.T) {
-	mockUser := domain.NewUser("post_original_user")
-	mockUserRepost := domain.NewUser("post_repost_user")
+	mockUser := user.NewUser("post_original_user")
+	mockUserRepost := user.NewUser("post_repost_user")
 	mockPostInput := NewPostInput{
 		User:    mockUser,
 		Content: "post_original_content",
@@ -61,8 +61,8 @@ func TestShouldInitializeARepostCorrectly(t *testing.T) {
 }
 
 func TestShouldInitializeAQuoteCorrectly(t *testing.T) {
-	mockePostUser := domain.NewUser("post_original_user")
-	mockQuotePostUser := domain.NewUser("post_user_user")
+	mockePostUser := user.NewUser("post_original_user")
+	mockQuotePostUser := user.NewUser("post_user_user")
 	mockPostInput := NewPostInput{
 		User:    mockePostUser,
 		Content: "post_original_content",
