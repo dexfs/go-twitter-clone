@@ -136,16 +136,14 @@ func TestShouldValidateHasReachedPostingLimitDay(t *testing.T) {
 	// When
 	hasReached := postRepo.HasReachedPostingLimitDay(userTest.ID, uint64(count))
 
-	want := true
 	if !hasReached {
-		t.Errorf("got %v want %v", hasReached, want)
+		t.Errorf("got %v want %v", hasReached, true)
 	}
 
 	hasReached = postRepo.HasReachedPostingLimitDay(userTest.ID, uint64(10))
 
-	want = false
 	if hasReached {
-		t.Errorf("got %v want %v", hasReached, want)
+		t.Errorf("got %v want %v", hasReached, false)
 	}
 }
 
