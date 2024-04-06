@@ -46,7 +46,7 @@ func NewPost(aNewPost NewPostInput) *Post {
 	}
 }
 
-func NewRepost(aRepostInput *NewRepostQuoteInput) (*Post, error) {
+func NewRepost(aRepostInput NewRepostQuoteInput) (*Post, error) {
 	if aRepostInput.Post.IsRepost {
 		return nil, errors.New("it is not possible repost a repost post")
 	}
@@ -68,7 +68,7 @@ func NewRepost(aRepostInput *NewRepostQuoteInput) (*Post, error) {
 	}, nil
 }
 
-func NewQuote(aNewQuoteInput *NewRepostQuoteInput) (*Post, error) {
+func NewQuote(aNewQuoteInput NewRepostQuoteInput) (*Post, error) {
 	if aNewQuoteInput.Post.IsRepost {
 		return nil, errors.New("it is not possible repost a repost post")
 	}
