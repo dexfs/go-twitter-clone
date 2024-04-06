@@ -43,11 +43,9 @@ func TestShouldFindAPostByID(t *testing.T) {
 	}
 	newPost := postEntity.NewPost(newPostInput)
 	postEntity.NewPost(newPostInput2)
-	// When
+
 	postRepo.Insert(newPost)
 	post, err := postRepo.FindByID(newPost.ID)
-
-	// Then
 
 	if err != nil {
 		t.Errorf("got %v want no empty", post)
@@ -56,6 +54,13 @@ func TestShouldFindAPostByID(t *testing.T) {
 	if post.ID != newPost.ID {
 		t.Errorf("got %v want %v", post.ID, newPost.ID)
 	}
+
+	post, err = postRepo.FindByID("not_found_id")
+	if err == nil {
+
+		t.Errorf("got %v want empty", post)
+	}
+
 }
 
 func TestShouldRemoveAPost(t *testing.T) {
@@ -124,21 +129,65 @@ func TestShouldValidateHasReachedPostingLimitDay(t *testing.T) {
 	for i := 0; i < count; i++ {
 		postRepo.Insert(postEntity.NewPost(postEntity.NewPostInput{
 			User:    userTest,
-			Content: GenerateRandomString(10),
+			Content: generateRandomString(10),
 		}))
 	}
 
 	// When
 	hasReached := postRepo.HasReachedPostingLimitDay(userTest.ID, uint64(count))
 
-	expect := true
+	want := true
+	if !hasReached {
+		t.Errorf("got %v want %v", hasReached, want)
+	}
 
-	if hasReached != expect {
-		t.Errorf("got %v want %v", hasReached, expect)
+	hasReached = postRepo.HasReachedPostingLimitDay(userTest.ID, uint64(10))
+
+	want = false
+	if hasReached {
+		t.Errorf("got %v want %v", hasReached, want)
 	}
 }
 
-func GenerateRandomString(length int) string {
+func TestShouldVerifyIfAPostIsEligibleForRepost(t *testing.T) {
+	//Given
+	mockUser := userEntity.NewUser("post_user_test")
+	mockRepostUser := userEntity.NewUser("repost_user_test")
+	mockOrigionalPostInput := postEntity.NewPostInput{
+		User:    mockUser,
+		Content: "original_post",
+	}
+	mockOriginalPost := postEntity.NewPost(mockOrigionalPostInput)
+	mockRepostInput := postEntity.NewRepostQuoteInput{
+		User:    mockRepostUser,
+		Post:    mockOriginalPost,
+		Content: "repost",
+	}
+	mockRepost, _ := postEntity.NewRepost(mockRepostInput)
+
+	db := &database.InMemoryDB[postEntity.Post]{}
+	db.Insert(mockOriginalPost)
+	db.Insert(mockRepost)
+	postRepo := NewPostInMemory(db)
+
+	// When
+	// Then
+	hasPostBeenRepostedByUserRepost := postRepo.HasPostBeenRepostedByUser(mockOriginalPost.ID, mockRepostUser.ID)
+
+	if !hasPostBeenRepostedByUserRepost {
+		t.Errorf("got %v want %v", hasPostBeenRepostedByUserRepost, true)
+	}
+
+	hasPostBeenRepostedByUser := postRepo.HasPostBeenRepostedByUser(mockOriginalPost.ID, mockUser.ID)
+
+	if hasPostBeenRepostedByUser {
+		t.Errorf("got %v want %v", hasPostBeenRepostedByUserRepost, false)
+	}
+
+}
+
+// utils
+func generateRandomString(length int) string {
 	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	b := make([]byte, length)
 	for i := range b {
