@@ -1,12 +1,12 @@
 package posts
 
 import (
-	"github.com/dexfs/go-twitter-clone/internal/user"
+	userEntity "github.com/dexfs/go-twitter-clone/internal/user"
 	"testing"
 )
 
 func TestShouldInitializeAPostCorrectly(t *testing.T) {
-	user := user.NewUser("user post 1")
+	user := userEntity.NewUser("user post 1")
 	mockInput := NewPostInput{User: user, Content: "mock_content"}
 	newPost := NewPost(mockInput)
 
@@ -31,8 +31,8 @@ func TestShouldInitializeAPostCorrectly(t *testing.T) {
 }
 
 func TestShouldInitializeARepostCorrectly(t *testing.T) {
-	mockUser := user.NewUser("post_original_user")
-	mockUserRepost := user.NewUser("post_repost_user")
+	mockUser := userEntity.NewUser("post_original_user")
+	mockUserRepost := userEntity.NewUser("post_repost_user")
 	mockPostInput := NewPostInput{
 		User:    mockUser,
 		Content: "post_original_content",
@@ -61,8 +61,8 @@ func TestShouldInitializeARepostCorrectly(t *testing.T) {
 }
 
 func TestShouldInitializeAQuoteCorrectly(t *testing.T) {
-	mockePostUser := user.NewUser("post_original_user")
-	mockQuotePostUser := user.NewUser("post_user_user")
+	mockePostUser := userEntity.NewUser("post_original_user")
+	mockQuotePostUser := userEntity.NewUser("post_user_user")
 	mockPostInput := NewPostInput{
 		User:    mockePostUser,
 		Content: "post_original_content",
@@ -108,5 +108,4 @@ func TestShouldInitializeAQuoteCorrectly(t *testing.T) {
 	if newQuotePost.OriginalPostScreenName != mockOriginalPost.User.Username {
 		t.Errorf("Expected OriginalPostScreenName to be '%s', but got '%s'", mockOriginalPost.User.Username, newQuotePost.OriginalPostScreenName)
 	}
-
 }
