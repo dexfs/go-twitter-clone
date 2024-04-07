@@ -31,7 +31,15 @@ type NewRepostQuoteInput struct {
 	Content string
 }
 
-func NewPost(aNewPost NewPostInput) *Post {
+func NewPost(aNewPost NewPostInput) (*Post, error) {
+	if aNewPost.User == nil {
+		return nil, errors.New("no user provided")
+	}
+
+	if aNewPost.Content == "" {
+		return nil, errors.New("no content provided")
+	}
+
 	return &Post{
 		ID:                     uuid.NewString(),
 		User:                   aNewPost.User,
@@ -43,7 +51,7 @@ func NewPost(aNewPost NewPostInput) *Post {
 		OriginalPostContent:    "",
 		OriginalPostUserID:     "",
 		OriginalPostScreenName: "",
-	}
+	}, nil
 }
 
 func NewRepost(aRepostInput NewRepostQuoteInput) (*Post, error) {
@@ -69,8 +77,20 @@ func NewRepost(aRepostInput NewRepostQuoteInput) (*Post, error) {
 }
 
 func NewQuote(aNewQuoteInput NewRepostQuoteInput) (*Post, error) {
-	if aNewQuoteInput.Post.IsRepost {
-		return nil, errors.New("it is not possible repost a repost post")
+	if aNewQuoteInput.Post == nil {
+		return nil, errors.New("no post provided")
+	}
+
+	if aNewQuoteInput.User == nil {
+		return nil, errors.New("no user provided")
+	}
+
+	if aNewQuoteInput.Content == "" {
+		return nil, errors.New("no content provided")
+	}
+
+	if aNewQuoteInput.Post.IsQuote {
+		return nil, errors.New("it is not possible a quote post of a quote post")
 	}
 
 	if aNewQuoteInput.Post.User.ID == aNewQuoteInput.User.ID {
