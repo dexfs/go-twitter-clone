@@ -17,7 +17,7 @@ type Post *postEntity.Post
 
 type Count uint64
 
-func NewPostInMemory(db *database.InMemoryDB[postEntity.Post]) *InMemoryPostRepo {
+func NewInMemoryPostRepo(db *database.InMemoryDB[postEntity.Post]) *InMemoryPostRepo {
 	return &InMemoryPostRepo{
 		db: db,
 	}

@@ -11,7 +11,7 @@ func TestShouldReturnInsertedUser(t *testing.T) {
 	userTest := userEntity.NewUser("usuarion_test_1")
 
 	db := &database.InMemoryDB[userEntity.User]{}
-	userRepo := NewUserInMemoryRepo(db)
+	userRepo := NewInMemoryUserRepo(db)
 
 	userRepo.Insert(userTest)
 
@@ -35,7 +35,7 @@ func TestShouldReturnUserByUsername(t *testing.T) {
 	}
 	db.Insert(userToFind)
 
-	userRepo := NewUserInMemoryRepo(db)
+	userRepo := NewInMemoryUserRepo(db)
 
 	foundUser, _ := userRepo.ByUsername(userToFind.Username)
 
@@ -53,7 +53,7 @@ func TestShouldRemoveUserByID(t *testing.T) {
 	}
 	db.Insert(userToDelete)
 
-	userRepo := NewUserInMemoryRepo(db)
+	userRepo := NewInMemoryUserRepo(db)
 
 	userRepo.Remove(userToDelete)
 

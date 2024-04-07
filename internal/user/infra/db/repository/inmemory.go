@@ -10,7 +10,7 @@ type InMemoryUserRepo struct {
 	db *database.InMemoryDB[userEntity.User]
 }
 
-func NewUserInMemoryRepo(db *database.InMemoryDB[userEntity.User]) *InMemoryUserRepo {
+func NewInMemoryUserRepo(db *database.InMemoryDB[userEntity.User]) *InMemoryUserRepo {
 	return &InMemoryUserRepo{
 		db: db,
 	}
