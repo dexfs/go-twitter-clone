@@ -14,7 +14,7 @@ func TestGetUserInfoUseCase_WithValidUsername_ReturnsUserInfo(t *testing.T) {
 	usersSeed := UserSeed(inMemoryDb)
 	userRepo := MakeRepoInstance(inMemoryDb)
 
-	getInfoUseCase, _ := NewGetUserFeedUseCase(userRepo)
+	getInfoUseCase, _ := NewGetUserInfoUseCase(userRepo)
 	output, err := getInfoUseCase.Execute(usersSeed[0].Username)
 	if err != nil {
 		t.Errorf("error while executing getInfoUseCase: %v", err)
@@ -28,7 +28,7 @@ func TestGetUserInfoUseCase_WithNonExistingUsername_ReturnsError(t *testing.T) {
 	inMemoryDb := MakeDb()
 	userRepo := MakeRepoInstance(inMemoryDb)
 
-	getInfoUseCase, _ := NewGetUserFeedUseCase(userRepo)
+	getInfoUseCase, _ := NewGetUserInfoUseCase(userRepo)
 	output, err := getInfoUseCase.Execute("")
 	if err == nil {
 		t.Errorf("should return error")
@@ -39,7 +39,7 @@ func TestGetUserInfoUseCase_WithNonExistingUsername_ReturnsError(t *testing.T) {
 	}
 }
 func TestGetUserInfoUseCase_WithNilUserRepository_ReturnsError(t *testing.T) {
-	_, err := NewGetUserFeedUseCase(nil)
+	_, err := NewGetUserInfoUseCase(nil)
 	if err == nil {
 		t.Errorf("should return error")
 	}
@@ -49,7 +49,7 @@ func TestGetUserInfoUseCase_WithNilUserRepository_ReturnsError(t *testing.T) {
 	}
 }
 
-// helpers
+// mocks
 func MakeDb() *database.InMemoryDB[userEntity.User] {
 	return &database.InMemoryDB[userEntity.User]{}
 }

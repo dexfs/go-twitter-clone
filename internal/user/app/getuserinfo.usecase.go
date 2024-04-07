@@ -14,7 +14,7 @@ type GetUserInfoOutput struct {
 	info *userEntity.User
 }
 
-func NewGetUserFeedUseCase(userRepo interfaces.UserRepository) (*GetUserInfoUseCase, error) {
+func NewGetUserInfoUseCase(userRepo interfaces.UserRepository) (*GetUserInfoUseCase, error) {
 	if userRepo == nil {
 		return nil, errors.New("userRepo cannot be nil")
 	}
