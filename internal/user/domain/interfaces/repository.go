@@ -5,5 +5,5 @@ import (
 )
 
 type UserRepository interface {
-	ByUsername(username string) userEntity.User
+	ByUsername(username string) (*userEntity.User, error)
 }
