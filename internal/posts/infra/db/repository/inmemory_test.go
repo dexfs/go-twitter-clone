@@ -17,7 +17,7 @@ func TestShouldInsertAPost(t *testing.T) {
 		User:    userTest,
 		Content: "post test",
 	}
-	newPost := postEntity.NewPost(newPostInput)
+	newPost, _ := postEntity.NewPost(newPostInput)
 	// When
 	postRepo.Insert(newPost)
 	posts := postRepo.GetAll()
@@ -41,7 +41,7 @@ func TestShouldFindAPostByID(t *testing.T) {
 		User:    userTest,
 		Content: "post2 test",
 	}
-	newPost := postEntity.NewPost(newPostInput)
+	newPost, _ := postEntity.NewPost(newPostInput)
 	postEntity.NewPost(newPostInput2)
 
 	postRepo.Insert(newPost)
@@ -80,8 +80,8 @@ func TestShouldRemoveAPost(t *testing.T) {
 		User:    userTest,
 		Content: "post2 test",
 	}
-	newPost := postEntity.NewPost(newPostInput)
-	newPost2 := postEntity.NewPost(newPostInput2)
+	newPost, _ := postEntity.NewPost(newPostInput)
+	newPost2, _ := postEntity.NewPost(newPostInput2)
 
 	// When
 	postRepo.Insert(newPost)
@@ -109,8 +109,8 @@ func TestShoulCountPostsPerUser(t *testing.T) {
 		User:    userTest,
 		Content: "post2 test",
 	}
-	newPost := postEntity.NewPost(newPostInput)
-	newPost2 := postEntity.NewPost(newPostInput2)
+	newPost, _ := postEntity.NewPost(newPostInput)
+	newPost2, _ := postEntity.NewPost(newPostInput2)
 
 	// When
 	postRepo.Insert(newPost)
@@ -131,10 +131,11 @@ func TestShouldValidateHasReachedPostingLimitDay(t *testing.T) {
 	postRepo := NewPostInMemory(db)
 	count := 5
 	for i := 0; i < count; i++ {
-		postRepo.Insert(postEntity.NewPost(postEntity.NewPostInput{
+		newPost, _ := postEntity.NewPost(postEntity.NewPostInput{
 			User:    userTest,
 			Content: generateRandomString(10),
-		}))
+		})
+		postRepo.Insert(newPost)
 	}
 
 	// When
@@ -159,7 +160,7 @@ func TestShouldVerifyIfAPostIsEligibleForRepost(t *testing.T) {
 		User:    mockUser,
 		Content: "original_post",
 	}
-	mockOriginalPost := postEntity.NewPost(mockOrigionalPostInput)
+	mockOriginalPost, _ := postEntity.NewPost(mockOrigionalPostInput)
 	mockRepostInput := postEntity.NewRepostQuoteInput{
 		User:    mockRepostUser,
 		Post:    mockOriginalPost,
