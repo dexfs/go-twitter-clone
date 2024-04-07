@@ -2,6 +2,7 @@ package repository
 
 import (
 	postEntity "github.com/dexfs/go-twitter-clone/internal/posts"
+	postDomainInterfaces "github.com/dexfs/go-twitter-clone/internal/posts/domain/interfaces"
 	userEntity "github.com/dexfs/go-twitter-clone/internal/user"
 	"github.com/dexfs/go-twitter-clone/pkg/database"
 	"math/rand"
@@ -118,7 +119,7 @@ func TestShoulCountPostsPerUser(t *testing.T) {
 	countPosts := postRepo.CountByUser(userTest.ID)
 
 	// Then
-	expected := Count(2)
+	expected := postDomainInterfaces.Count(2)
 	if countPosts != expected {
 		t.Errorf("got %v want %v", countPosts, expected)
 	}
