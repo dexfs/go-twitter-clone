@@ -23,7 +23,7 @@ func (r *InMemoryUserRepo) ByUsername(username string) (*userEntity.User, error)
 		}
 	}
 
-	return nil, errors.New("currentUser not found")
+	return nil, errors.New("user not found")
 }
 
 func (r *InMemoryUserRepo) Insert(item *userEntity.User) {
