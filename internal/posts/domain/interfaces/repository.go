@@ -2,12 +2,12 @@ package interfaces
 
 import postEntity "github.com/dexfs/go-twitter-clone/internal/posts"
 
-type Limit uint64
 type ID string
 type Posts []*postEntity.Post
 type Count uint64
 type PostingLimitReached bool
 type HasRepost bool
+type Post *postEntity.Post
 
 /*
 *
@@ -15,7 +15,8 @@ type HasRepost bool
 */
 type PostRepository interface {
 	GetAll() Posts
-	CountByUser(userId ID) Count
-	HasRepostByIdAndUserId(postId ID, userId string) HasRepost
-	HasReachedPostingLimitDay(postId ID, userId ID, limit Limit) PostingLimitReached
+	CountByUser(userId string) Count
+	HasPostBeenRepostedByUser(postID string, userID string) HasRepost
+	HasReachedPostingLimitDay(userId string, limit uint64) PostingLimitReached
+	GetFeedByUserID(userID string) Posts
 }
