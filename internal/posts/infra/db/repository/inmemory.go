@@ -73,7 +73,7 @@ func (r *InMemoryPostRepo) HasReachedPostingLimitDay(userId string, limit uint64
 		}
 	}
 
-	reached := count == limit
+	reached := count >= limit
 	if reached {
 		return true
 	} else {
