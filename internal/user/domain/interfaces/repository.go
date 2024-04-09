@@ -6,4 +6,5 @@ import (
 
 type UserRepository interface {
 	ByUsername(username string) (*userEntity.User, error)
+	FindByID(id string) (*userEntity.User, error)
 }

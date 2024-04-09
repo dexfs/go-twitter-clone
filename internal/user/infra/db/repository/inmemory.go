@@ -37,3 +37,12 @@ func (r *InMemoryUserRepo) GetAll() []*userEntity.User {
 func (r *InMemoryUserRepo) Remove(item *userEntity.User) {
 	r.db.Remove(item)
 }
+
+func (r *InMemoryUserRepo) FindByID(id string) (*userEntity.User, error) {
+	for _, currentUser := range r.db.GetAll() {
+		if currentUser.ID == id {
+			return currentUser, nil
+		}
+	}
+	return nil, errors.New("user not found")
+}
