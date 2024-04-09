@@ -19,4 +19,5 @@ type PostRepository interface {
 	HasPostBeenRepostedByUser(postID string, userID string) HasRepost
 	HasReachedPostingLimitDay(userId string, limit uint64) PostingLimitReached
 	GetFeedByUserID(userID string) Posts
+	Insert(item *postEntity.Post)
 }
