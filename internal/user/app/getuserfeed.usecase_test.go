@@ -2,7 +2,6 @@ package app
 
 import (
 	postEntity "github.com/dexfs/go-twitter-clone/internal/posts"
-	userEntity "github.com/dexfs/go-twitter-clone/internal/user"
 	"github.com/dexfs/go-twitter-clone/pkg/database"
 	"github.com/dexfs/go-twitter-clone/tests/mocks"
 	"reflect"
@@ -10,9 +9,9 @@ import (
 )
 
 func TestExecute_WithValidUsername_ReturnsFeedItems(t *testing.T) {
-	TestMocks := GetTestMocks()
+	TestMocks := mocks.GetTestMocks()
 	mockUser := mocks.UserSeed(TestMocks.MockUserDB, 1)
-	mocks.PostSeed(TestMocks.MockPostDB, mockUser[0])
+	mocks.PostSeed(TestMocks.MockPostDB, mockUser[0], 2)
 	mockUserRepo := mocks.MakeInMemoryUserRepo(TestMocks.MockUserDB)
 
 	postRepo := mocks.MakeInMemoryPostRepo(TestMocks.MockPostDB)
@@ -30,9 +29,9 @@ func TestExecute_WithValidUsername_ReturnsFeedItems(t *testing.T) {
 	}
 }
 func TestExecute_WithEmptyUsername_ReturnsError(t *testing.T) {
-	TestMocks := GetTestMocks()
+	TestMocks := mocks.GetTestMocks()
 	mockUser := mocks.UserSeed(TestMocks.MockUserDB, 1)
-	mocks.PostSeed(TestMocks.MockPostDB, mockUser[0])
+	mocks.PostSeed(TestMocks.MockPostDB, mockUser[0], 2)
 	mockUserRepo := mocks.MakeInMemoryUserRepo(TestMocks.MockUserDB)
 	postRepo := mocks.MakeInMemoryPostRepo(TestMocks.MockPostDB)
 	getUserFeedUseCase, _ := NewGetUserFeedUseCase(mockUserRepo, postRepo)
@@ -57,9 +56,9 @@ func TestExecute_WithEmptyUsername_ReturnsError(t *testing.T) {
 
 }
 func TestExecute_WithNonExistingUsername_ReturnsError(t *testing.T) {
-	TestMocks := GetTestMocks()
+	TestMocks := mocks.GetTestMocks()
 	mockUser := mocks.UserSeed(TestMocks.MockUserDB, 1)
-	mocks.PostSeed(TestMocks.MockPostDB, mockUser[0])
+	mocks.PostSeed(TestMocks.MockPostDB, mockUser[0], 2)
 	mockUserRepo := mocks.MakeInMemoryUserRepo(TestMocks.MockUserDB)
 	postRepo := mocks.MakeInMemoryPostRepo(TestMocks.MockPostDB)
 	getUserFeedUseCase, _ := NewGetUserFeedUseCase(mockUserRepo, postRepo)
@@ -83,7 +82,7 @@ func TestExecute_WithNonExistingUsername_ReturnsError(t *testing.T) {
 	}
 }
 func TestExecute_WithNilUserRepository_ReturnsError(t *testing.T) {
-	TestMocks := GetTestMocks()
+	TestMocks := mocks.GetTestMocks()
 	postRepo := mocks.MakeInMemoryPostRepo(TestMocks.MockPostDB)
 	getUserFeedUseCase, err := NewGetUserFeedUseCase(nil, postRepo)
 
@@ -100,7 +99,7 @@ func TestExecute_WithNilUserRepository_ReturnsError(t *testing.T) {
 	}
 }
 func TestExecute_WithNilPostRepository_ReturnsError(t *testing.T) {
-	TestMocks := GetTestMocks()
+	TestMocks := mocks.GetTestMocks()
 	mockUserRepo := mocks.MakeInMemoryUserRepo(TestMocks.MockUserDB)
 	getUserFeedUseCase, err := NewGetUserFeedUseCase(mockUserRepo, nil)
 
@@ -117,7 +116,7 @@ func TestExecute_WithNilPostRepository_ReturnsError(t *testing.T) {
 	}
 }
 func TestExecute_WithPostRepositoryError_ReturnsError(t *testing.T) {
-	TestMocks := GetTestMocks()
+	TestMocks := mocks.GetTestMocks()
 	mockUser := mocks.UserSeed(TestMocks.MockUserDB, 1)
 	mockUserRepo := mocks.MakeInMemoryUserRepo(TestMocks.MockUserDB)
 	mockPostDB := &database.InMemoryDB[postEntity.Post]{}
@@ -133,26 +132,5 @@ func TestExecute_WithPostRepositoryError_ReturnsError(t *testing.T) {
 
 	if len(userFeed.items) > 0 {
 		t.Errorf("want 0 posts; got %v", len(userFeed.items))
-	}
-}
-
-type TestMocks struct {
-	MockUserDB    *database.InMemoryDB[userEntity.User]
-	MockUserSeed  []*userEntity.User
-	MockPostDB    *database.InMemoryDB[postEntity.Post]
-	MockPostsSeed []*postEntity.Post
-}
-
-func GetTestMocks() TestMocks {
-	mockUserDB := mocks.MakeDb[userEntity.User]()
-	mockPostDB := mocks.MakeDb[postEntity.Post]()
-	mockUserSeed := mocks.UserSeed(mockUserDB, 1)
-	mockPostsSeed := mocks.PostSeed(mockPostDB, mockUserSeed[0])
-
-	return TestMocks{
-		MockUserDB:    mockUserDB,
-		MockUserSeed:  mockUserSeed,
-		MockPostDB:    mockPostDB,
-		MockPostsSeed: mockPostsSeed,
 	}
 }
