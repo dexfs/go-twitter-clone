@@ -51,7 +51,7 @@ func (r *InMemoryPostRepo) FindByID(id string) (*postEntity.Post, error) {
 		}
 	}
 
-	return nil, errors.New("currentUser not found")
+	return nil, errors.New("post not found")
 }
 
 func (r *InMemoryPostRepo) Remove(item *postEntity.Post) {
