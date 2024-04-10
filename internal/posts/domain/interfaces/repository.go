@@ -20,4 +20,5 @@ type PostRepository interface {
 	HasReachedPostingLimitDay(userId string, limit uint64) PostingLimitReached
 	GetFeedByUserID(userID string) Posts
 	Insert(item *postEntity.Post)
+	FindByID(id string) (*postEntity.Post, error)
 }
