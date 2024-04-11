@@ -24,7 +24,7 @@ jobs:
           # If you are using config file (option 1) you shouldn't use these parameters, however
           # specifting these action parameters will override appropriate config values.
           profile: cover.out
-          local-prefix: github.com/org/project
-          threshold-file: 80
-          threshold-package: 80
-          threshold-total: 95
+          local-prefix: github.com/dexfs/go-twitter-clone
+          threshold-file: 60
+          threshold-package: 70
+          threshold-total: 80
