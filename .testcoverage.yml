@@ -43,7 +43,8 @@ exclude:
   # Exclude files or packages matching their paths
   paths:
     - \.pb\.go$    # excludes all protobuf generated files
-    - ^pkg/bar     # exclude package `pkg/bar`
+    - ^pkg/*    # exclude package `pkg/bar`
+    - cmd/*
 
 # NOTES:
 # - symbol `/` in all path regexps will be replaced by current OS file path separator
