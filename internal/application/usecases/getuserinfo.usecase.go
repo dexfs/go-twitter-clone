@@ -2,8 +2,8 @@ package app
 
 import (
 	"errors"
-	userEntity "github.com/dexfs/go-twitter-clone/internal/user"
-	"github.com/dexfs/go-twitter-clone/internal/user/domain/interfaces"
+	"github.com/dexfs/go-twitter-clone/internal/domain"
+	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
 )
 
 type GetUserInfoUseCase struct {
@@ -11,7 +11,7 @@ type GetUserInfoUseCase struct {
 }
 
 type GetUserInfoOutput struct {
-	info *userEntity.User
+	info *domain.User
 }
 
 func NewGetUserInfoUseCase(userRepo interfaces.UserRepository) (*GetUserInfoUseCase, error) {

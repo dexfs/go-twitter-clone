@@ -1,9 +1,9 @@
 package app
 
 import (
-	userEntity "github.com/dexfs/go-twitter-clone/internal/user"
-	"github.com/dexfs/go-twitter-clone/internal/user/domain/interfaces"
-	"github.com/dexfs/go-twitter-clone/internal/user/infra/db/repository"
+	"github.com/dexfs/go-twitter-clone/internal/domain"
+	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
+	"github.com/dexfs/go-twitter-clone/internal/infra/repository/inmemory"
 	"github.com/dexfs/go-twitter-clone/pkg/database"
 	"strconv"
 	"testing"
@@ -50,18 +50,18 @@ func TestGetUserInfoUseCase_WithNilUserRepository_ReturnsError(t *testing.T) {
 }
 
 // mocks
-func MakeDb() *database.InMemoryDB[userEntity.User] {
-	return &database.InMemoryDB[userEntity.User]{}
+func MakeDb() *database.InMemoryDB[domain.User] {
+	return &database.InMemoryDB[domain.User]{}
 }
-func MakeRepoInstance(db *database.InMemoryDB[userEntity.User]) interfaces.UserRepository {
-	repo := repository.NewInMemoryUserRepo(db)
+func MakeRepoInstance(db *database.InMemoryDB[domain.User]) interfaces.UserRepository {
+	repo := inmemory.NewInMemoryUserRepo(db)
 	return repo
 }
-func UserSeed(db *database.InMemoryDB[userEntity.User]) []*userEntity.User {
-	users := make([]*userEntity.User, 5)
+func UserSeed(db *database.InMemoryDB[domain.User]) []*domain.User {
+	users := make([]*domain.User, 5)
 	for i := 0; i < 5; i++ {
 		username := "user" + strconv.Itoa(i)
-		newUser := userEntity.NewUser(username)
+		newUser := domain.NewUser(username)
 		db.Insert(newUser)
 		users[i] = newUser
 	}
