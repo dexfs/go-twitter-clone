@@ -1,7 +1,6 @@
-package posts
+package domain
 
 import (
-	userEntity "github.com/dexfs/go-twitter-clone/internal/user"
 	"github.com/google/uuid"
 	"testing"
 	"time"
@@ -9,7 +8,7 @@ import (
 
 // Post
 func TestNewPost_WithValidInput_ReturnsOK(t *testing.T) {
-	user := userEntity.NewUser("user post 1")
+	user := NewUser("user post 1")
 	mockInput := NewPostInput{User: user, Content: "mock_content"}
 	newPost, _ := NewPost(mockInput)
 
@@ -56,7 +55,7 @@ func TestNewPost_WithNilUser_ReturnsError(t *testing.T) {
 
 }
 func TestNewPost_WithEmptyPostContent_ReturnsError(t *testing.T) {
-	mockUser := userEntity.NewUser("test_user")
+	mockUser := NewUser("test_user")
 	mockInput := NewPostInput{
 		User: mockUser,
 	}
@@ -66,15 +65,15 @@ func TestNewPost_WithEmptyPostContent_ReturnsError(t *testing.T) {
 		t.Errorf("Invalid instance of Post")
 	}
 
-	if err.Error() != "no content provided" {
+	if "no content provided" != err.Error() {
 		t.Errorf("got %q want %q", err.Error(), "no content provided")
 	}
 }
 
 // Repost
 func TestNewRepost_WithValidInput_ReturnsOK(t *testing.T) {
-	mockUser := userEntity.NewUser("post_original_user")
-	mockUserRepost := userEntity.NewUser("post_repost_user")
+	mockUser := NewUser("post_original_user")
+	mockUserRepost := NewUser("post_repost_user")
 	mockPostInput := NewPostInput{
 		User:    mockUser,
 		Content: "post_original_content",
@@ -135,7 +134,7 @@ func TestNewRepost_WithSameUserID_ReturnsError(t *testing.T) {
 	}
 
 	expectedMsgError := "it is not possible repost your own post"
-	if err.Error() != expectedMsgError {
+	if expectedMsgError != err.Error() {
 		t.Errorf("Returned error is not correct. got '%s' want '%s'", err.Error(), expectedMsgError)
 	}
 }
@@ -144,8 +143,8 @@ func TestNewRepost_WithEmptyPostContent_ReturnsError(t *testing.T) {}
 
 // Quotepost
 func TestNewQuotepost_WithValidInput_ReturnsOK(t *testing.T) {
-	mockePostUser := userEntity.NewUser("post_original_user")
-	mockQuotePostUser := userEntity.NewUser("post_user_user")
+	mockePostUser := NewUser("post_original_user")
+	mockQuotePostUser := NewUser("post_user_user")
 	mockPostInput := NewPostInput{
 		User:    mockePostUser,
 		Content: "post_original_content",
@@ -206,7 +205,7 @@ func TestNewQuotepost_WithSameUserID_ReturnsError(t *testing.T) {
 		t.Errorf("Invalid instance of QuotePost returned")
 	}
 
-	if err.Error() != "it is not possible repost your own post" {
+	if "it is not possible repost your own post" != err.Error() {
 		t.Errorf("Returned error is not correct. got '%s' want '%s'", err.Error(), "it is not possible repost your own post")
 	}
 }
@@ -278,7 +277,7 @@ func TestNewQuotepost_WithNilUser_ReturnsError(t *testing.T) {
 
 // in memory seeders
 func GenerateOriginalPost() *Post {
-	mockePostUser := userEntity.NewUser("post_original_user")
+	mockePostUser := NewUser("post_original_user")
 	mockPostInput := NewPostInput{
 		User:    mockePostUser,
 		Content: "post_original_content",

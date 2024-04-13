@@ -1,25 +1,25 @@
-package repository
+package inmemory
 
 import (
 	"errors"
-	postEntity "github.com/dexfs/go-twitter-clone/internal/posts"
-	postDomainInterfaces "github.com/dexfs/go-twitter-clone/internal/posts/domain/interfaces"
+	"github.com/dexfs/go-twitter-clone/internal/domain"
+	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
 	"github.com/dexfs/go-twitter-clone/pkg/database"
 	"github.com/dexfs/go-twitter-clone/pkg/shared/helpers"
 )
 
 type InMemoryPostRepo struct {
-	db *database.InMemoryDB[postEntity.Post]
+	db *database.InMemoryDB[domain.Post]
 }
 
-func NewInMemoryPostRepo(db *database.InMemoryDB[postEntity.Post]) *InMemoryPostRepo {
+func NewInMemoryPostRepo(db *database.InMemoryDB[domain.Post]) *InMemoryPostRepo {
 	return &InMemoryPostRepo{
 		db: db,
 	}
 }
 
-func (r *InMemoryPostRepo) CountByUser(userId string) postDomainInterfaces.Count {
-	count := postDomainInterfaces.Count(0)
+func (r *InMemoryPostRepo) CountByUser(userId string) interfaces.Count {
+	count := interfaces.Count(0)
 	for _, currentData := range r.db.GetAll() {
 		if currentData.User.ID == userId {
 			count++
@@ -29,7 +29,7 @@ func (r *InMemoryPostRepo) CountByUser(userId string) postDomainInterfaces.Count
 	return count
 }
 
-func (r *InMemoryPostRepo) HasPostBeenRepostedByUser(postID string, userID string) postDomainInterfaces.HasRepost {
+func (r *InMemoryPostRepo) HasPostBeenRepostedByUser(postID string, userID string) interfaces.HasRepost {
 	for _, vPost := range r.db.GetAll() {
 		if vPost.IsRepost {
 			if vPost.User.ID == userID && vPost.OriginalPostID == postID {
@@ -40,11 +40,11 @@ func (r *InMemoryPostRepo) HasPostBeenRepostedByUser(postID string, userID strin
 	return false
 }
 
-func (r *InMemoryPostRepo) Insert(item *postEntity.Post) {
+func (r *InMemoryPostRepo) Insert(item *domain.Post) {
 	r.db.Insert(item)
 }
 
-func (r *InMemoryPostRepo) FindByID(id string) (*postEntity.Post, error) {
+func (r *InMemoryPostRepo) FindByID(id string) (*domain.Post, error) {
 	for _, currentData := range r.db.GetAll() {
 		if currentData.ID == id {
 			return currentData, nil
@@ -54,15 +54,15 @@ func (r *InMemoryPostRepo) FindByID(id string) (*postEntity.Post, error) {
 	return nil, errors.New("post not found")
 }
 
-func (r *InMemoryPostRepo) Remove(item *postEntity.Post) {
+func (r *InMemoryPostRepo) Remove(item *domain.Post) {
 	r.db.Remove(item)
 }
 
-func (r *InMemoryPostRepo) GetAll() postDomainInterfaces.Posts {
+func (r *InMemoryPostRepo) GetAll() interfaces.Posts {
 	return r.db.GetAll()
 }
 
-func (r *InMemoryPostRepo) HasReachedPostingLimitDay(userId string, limit uint64) postDomainInterfaces.PostingLimitReached {
+func (r *InMemoryPostRepo) HasReachedPostingLimitDay(userId string, limit uint64) interfaces.PostingLimitReached {
 	var count = uint64(0)
 
 	for _, currentData := range r.db.GetAll() {
@@ -81,8 +81,8 @@ func (r *InMemoryPostRepo) HasReachedPostingLimitDay(userId string, limit uint64
 	}
 }
 
-func (r *InMemoryPostRepo) GetFeedByUserID(userID string) postDomainInterfaces.Posts {
-	var feed []*postEntity.Post
+func (r *InMemoryPostRepo) GetFeedByUserID(userID string) interfaces.Posts {
+	var feed []*domain.Post
 	for _, currentData := range r.db.GetAll() {
 		if currentData.User.ID == userID {
 			feed = append(feed, currentData)

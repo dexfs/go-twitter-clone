@@ -2,21 +2,20 @@ package app
 
 import (
 	"errors"
-	postEntity "github.com/dexfs/go-twitter-clone/internal/posts"
-	postDomainInterfaces "github.com/dexfs/go-twitter-clone/internal/posts/domain/interfaces"
-	userDomainInterfaces "github.com/dexfs/go-twitter-clone/internal/user/domain/interfaces"
+	"github.com/dexfs/go-twitter-clone/internal/domain"
+	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
 )
 
 type GetUserFeedUseCase struct {
-	userRepo userDomainInterfaces.UserRepository
-	postRepo postDomainInterfaces.PostRepository
+	userRepo interfaces.UserRepository
+	postRepo interfaces.PostRepository
 }
 
 type GetUserFeedUseCaseOutput struct {
-	items []*postEntity.Post
+	items []*domain.Post
 }
 
-func NewGetUserFeedUseCase(userRepo userDomainInterfaces.UserRepository, postRepo postDomainInterfaces.PostRepository) (*GetUserFeedUseCase, error) {
+func NewGetUserFeedUseCase(userRepo interfaces.UserRepository, postRepo interfaces.PostRepository) (*GetUserFeedUseCase, error) {
 	if userRepo == nil || postRepo == nil {
 		return nil, errors.New("the dependencies should not be nil")
 	}

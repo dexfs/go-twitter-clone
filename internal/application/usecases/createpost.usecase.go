@@ -2,17 +2,16 @@ package app
 
 import (
 	"errors"
-	"github.com/dexfs/go-twitter-clone/internal/posts"
-	postDomainInterfaces "github.com/dexfs/go-twitter-clone/internal/posts/domain/interfaces"
-	userDomainInterfaces "github.com/dexfs/go-twitter-clone/internal/user/domain/interfaces"
+	"github.com/dexfs/go-twitter-clone/internal/domain"
+	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
 )
 
 type CreatePostUseCase struct {
-	userRepo userDomainInterfaces.UserRepository
-	postRepo postDomainInterfaces.PostRepository
+	userRepo interfaces.UserRepository
+	postRepo interfaces.PostRepository
 }
 
-func NewCreatePostUseCase(userRepo userDomainInterfaces.UserRepository, postRepo postDomainInterfaces.PostRepository) *CreatePostUseCase {
+func NewCreatePostUseCase(userRepo interfaces.UserRepository, postRepo interfaces.PostRepository) *CreatePostUseCase {
 	return &CreatePostUseCase{
 		userRepo: userRepo,
 		postRepo: postRepo,
@@ -41,12 +40,12 @@ func (uc *CreatePostUseCase) Execute(input CreatePostInput) (CreatePostOutput, e
 	if err != nil {
 		return CreatePostOutput{}, err
 	}
-	newPostInput := posts.NewPostInput{
+	newPostInput := domain.NewPostInput{
 		User:    user,
 		Content: input.Content,
 	}
 
-	newPost, err := posts.NewPost(newPostInput)
+	newPost, err := domain.NewPost(newPostInput)
 
 	if err != nil {
 		return CreatePostOutput{}, err

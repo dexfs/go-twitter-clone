@@ -1,12 +1,9 @@
 package mocks
 
 import (
-	postEntity "github.com/dexfs/go-twitter-clone/internal/posts"
-	postDomainInterfaces "github.com/dexfs/go-twitter-clone/internal/posts/domain/interfaces"
-	postInfraImpl "github.com/dexfs/go-twitter-clone/internal/posts/infra/db/repository"
-	userEntity "github.com/dexfs/go-twitter-clone/internal/user"
-	"github.com/dexfs/go-twitter-clone/internal/user/domain/interfaces"
-	"github.com/dexfs/go-twitter-clone/internal/user/infra/db/repository"
+	"github.com/dexfs/go-twitter-clone/internal/domain"
+	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
+	"github.com/dexfs/go-twitter-clone/internal/infra/repository/inmemory"
 	"github.com/dexfs/go-twitter-clone/pkg/database"
 	"strconv"
 )
@@ -15,35 +12,35 @@ import (
 func MakeDb[T any]() *database.InMemoryDB[T] {
 	return &database.InMemoryDB[T]{}
 }
-func MakeInMemoryUserRepo(db *database.InMemoryDB[userEntity.User]) interfaces.UserRepository {
-	repo := repository.NewInMemoryUserRepo(db)
+func MakeInMemoryUserRepo(db *database.InMemoryDB[domain.User]) interfaces.UserRepository {
+	repo := inmemory.NewInMemoryUserRepo(db)
 	return repo
 }
-func MakeInMemoryPostRepo(db *database.InMemoryDB[postEntity.Post]) postDomainInterfaces.PostRepository {
-	repo := postInfraImpl.NewInMemoryPostRepo(db)
+func MakeInMemoryPostRepo(db *database.InMemoryDB[domain.Post]) interfaces.PostRepository {
+	repo := inmemory.NewInMemoryPostRepo(db)
 	return repo
 }
-func UserSeed(db *database.InMemoryDB[userEntity.User], amount int) []*userEntity.User {
+func UserSeed(db *database.InMemoryDB[domain.User], amount int) []*domain.User {
 	if amount <= 0 {
 		amount = 1
 	}
-	users := make([]*userEntity.User, amount)
+	users := make([]*domain.User, amount)
 	for i := 0; i < len(users); i++ {
 		username := "user" + strconv.Itoa(i)
-		newUser := userEntity.NewUser(username)
+		newUser := domain.NewUser(username)
 		db.Insert(newUser)
 		users[i] = newUser
 	}
 	return users
 }
-func PostSeed(db *database.InMemoryDB[postEntity.Post], user *userEntity.User, amount int) []*postEntity.Post {
-	posts := make([]*postEntity.Post, amount)
+func PostSeed(db *database.InMemoryDB[domain.Post], user *domain.User, amount int) []*domain.Post {
+	posts := make([]*domain.Post, amount)
 	for i := 0; i < len(posts); i++ {
-		newPostInput := postEntity.NewPostInput{
+		newPostInput := domain.NewPostInput{
 			User:    user,
 			Content: "post_" + strconv.Itoa(i),
 		}
-		newPost, _ := postEntity.NewPost(newPostInput)
+		newPost, _ := domain.NewPost(newPostInput)
 		db.Insert(newPost)
 		posts[i] = newPost
 	}
@@ -51,15 +48,15 @@ func PostSeed(db *database.InMemoryDB[postEntity.Post], user *userEntity.User, a
 }
 
 type TestMocks struct {
-	MockUserDB    *database.InMemoryDB[userEntity.User]
-	MockUserSeed  []*userEntity.User
-	MockPostDB    *database.InMemoryDB[postEntity.Post]
-	MockPostsSeed []*postEntity.Post
+	MockUserDB    *database.InMemoryDB[domain.User]
+	MockUserSeed  []*domain.User
+	MockPostDB    *database.InMemoryDB[domain.Post]
+	MockPostsSeed []*domain.Post
 }
 
 func GetTestMocks() TestMocks {
-	mockUserDB := MakeDb[userEntity.User]()
-	mockPostDB := MakeDb[postEntity.Post]()
+	mockUserDB := MakeDb[domain.User]()
+	mockPostDB := MakeDb[domain.Post]()
 	mockUserSeed := UserSeed(mockUserDB, 1)
 	mockPostsSeed := PostSeed(mockPostDB, mockUserSeed[0], 2)
 

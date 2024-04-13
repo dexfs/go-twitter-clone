@@ -1,24 +1,22 @@
 package interfaces
 
-import postEntity "github.com/dexfs/go-twitter-clone/internal/posts"
+import (
+	"github.com/dexfs/go-twitter-clone/internal/domain"
+)
 
 type ID string
-type Posts []*postEntity.Post
+type Posts []*domain.Post
 type Count uint64
 type PostingLimitReached bool
 type HasRepost bool
-type Post *postEntity.Post
+type Post *domain.Post
 
-/*
-*
-@see https://www.codingexplorations.com/blog/mastering-the-repository-pattern-in-go-a-comprehensive-guide
-*/
 type PostRepository interface {
 	GetAll() Posts
 	CountByUser(userId string) Count
 	HasPostBeenRepostedByUser(postID string, userID string) HasRepost
 	HasReachedPostingLimitDay(userId string, limit uint64) PostingLimitReached
 	GetFeedByUserID(userID string) Posts
-	Insert(item *postEntity.Post)
-	FindByID(id string) (*postEntity.Post, error)
+	Insert(item *domain.Post)
+	FindByID(id string) (*domain.Post, error)
 }

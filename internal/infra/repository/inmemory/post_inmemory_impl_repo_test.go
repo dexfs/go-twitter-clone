@@ -1,9 +1,8 @@
-package repository
+package inmemory
 
 import (
-	postEntity "github.com/dexfs/go-twitter-clone/internal/posts"
-	postDomainInterfaces "github.com/dexfs/go-twitter-clone/internal/posts/domain/interfaces"
-	userEntity "github.com/dexfs/go-twitter-clone/internal/user"
+	"github.com/dexfs/go-twitter-clone/internal/domain"
+	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
 	"github.com/dexfs/go-twitter-clone/pkg/database"
 	"math/rand"
 	"testing"
@@ -11,14 +10,14 @@ import (
 
 func TestShouldInsertAPost(t *testing.T) {
 	//Given
-	userTest := userEntity.NewUser("post_user_test")
-	db := &database.InMemoryDB[postEntity.Post]{}
+	userTest := domain.NewUser("post_user_test")
+	db := &database.InMemoryDB[domain.Post]{}
 	postRepo := NewInMemoryPostRepo(db)
-	newPostInput := postEntity.NewPostInput{
+	newPostInput := domain.NewPostInput{
 		User:    userTest,
 		Content: "post test",
 	}
-	newPost, _ := postEntity.NewPost(newPostInput)
+	newPost, _ := domain.NewPost(newPostInput)
 	// When
 	postRepo.Insert(newPost)
 	posts := postRepo.GetAll()
@@ -31,19 +30,19 @@ func TestShouldInsertAPost(t *testing.T) {
 
 func TestShouldFindAPostByID(t *testing.T) {
 	//Given
-	userTest := userEntity.NewUser("post_user_test")
-	db := &database.InMemoryDB[postEntity.Post]{}
+	userTest := domain.NewUser("post_user_test")
+	db := &database.InMemoryDB[domain.Post]{}
 	postRepo := NewInMemoryPostRepo(db)
-	newPostInput := postEntity.NewPostInput{
+	newPostInput := domain.NewPostInput{
 		User:    userTest,
 		Content: "post test",
 	}
-	newPostInput2 := postEntity.NewPostInput{
+	newPostInput2 := domain.NewPostInput{
 		User:    userTest,
 		Content: "post2 test",
 	}
-	newPost, _ := postEntity.NewPost(newPostInput)
-	postEntity.NewPost(newPostInput2)
+	newPost, _ := domain.NewPost(newPostInput)
+	domain.NewPost(newPostInput2)
 
 	postRepo.Insert(newPost)
 	post, err := postRepo.FindByID(newPost.ID)
@@ -70,19 +69,19 @@ func TestShouldFindAPostByID(t *testing.T) {
 
 func TestShouldRemoveAPost(t *testing.T) {
 	//Given
-	userTest := userEntity.NewUser("post_user_test")
-	db := &database.InMemoryDB[postEntity.Post]{}
+	userTest := domain.NewUser("post_user_test")
+	db := &database.InMemoryDB[domain.Post]{}
 	postRepo := NewInMemoryPostRepo(db)
-	newPostInput := postEntity.NewPostInput{
+	newPostInput := domain.NewPostInput{
 		User:    userTest,
 		Content: "post test",
 	}
-	newPostInput2 := postEntity.NewPostInput{
+	newPostInput2 := domain.NewPostInput{
 		User:    userTest,
 		Content: "post2 test",
 	}
-	newPost, _ := postEntity.NewPost(newPostInput)
-	newPost2, _ := postEntity.NewPost(newPostInput2)
+	newPost, _ := domain.NewPost(newPostInput)
+	newPost2, _ := domain.NewPost(newPostInput2)
 
 	// When
 	postRepo.Insert(newPost)
@@ -99,19 +98,19 @@ func TestShouldRemoveAPost(t *testing.T) {
 
 func TestShoulCountPostsPerUser(t *testing.T) {
 	//Given
-	userTest := userEntity.NewUser("post_user_test")
-	db := &database.InMemoryDB[postEntity.Post]{}
+	userTest := domain.NewUser("post_user_test")
+	db := &database.InMemoryDB[domain.Post]{}
 	postRepo := NewInMemoryPostRepo(db)
-	newPostInput := postEntity.NewPostInput{
+	newPostInput := domain.NewPostInput{
 		User:    userTest,
 		Content: "post test",
 	}
-	newPostInput2 := postEntity.NewPostInput{
+	newPostInput2 := domain.NewPostInput{
 		User:    userTest,
 		Content: "post2 test",
 	}
-	newPost, _ := postEntity.NewPost(newPostInput)
-	newPost2, _ := postEntity.NewPost(newPostInput2)
+	newPost, _ := domain.NewPost(newPostInput)
+	newPost2, _ := domain.NewPost(newPostInput2)
 
 	// When
 	postRepo.Insert(newPost)
@@ -119,7 +118,7 @@ func TestShoulCountPostsPerUser(t *testing.T) {
 	countPosts := postRepo.CountByUser(userTest.ID)
 
 	// Then
-	expected := postDomainInterfaces.Count(2)
+	expected := interfaces.Count(2)
 	if countPosts != expected {
 		t.Errorf("got %v want %v", countPosts, expected)
 	}
@@ -127,12 +126,12 @@ func TestShoulCountPostsPerUser(t *testing.T) {
 
 func TestShouldValidateHasReachedPostingLimitDay(t *testing.T) {
 	//Given
-	userTest := userEntity.NewUser("post_user_test")
-	db := &database.InMemoryDB[postEntity.Post]{}
+	userTest := domain.NewUser("post_user_test")
+	db := &database.InMemoryDB[domain.Post]{}
 	postRepo := NewInMemoryPostRepo(db)
 	count := 5
 	for i := 0; i < count; i++ {
-		newPost, _ := postEntity.NewPost(postEntity.NewPostInput{
+		newPost, _ := domain.NewPost(domain.NewPostInput{
 			User:    userTest,
 			Content: generateRandomString(10),
 		})
@@ -155,21 +154,21 @@ func TestShouldValidateHasReachedPostingLimitDay(t *testing.T) {
 
 func TestShouldVerifyIfAPostIsEligibleForRepost(t *testing.T) {
 	//Given
-	mockUser := userEntity.NewUser("post_user_test")
-	mockRepostUser := userEntity.NewUser("repost_user_test")
-	mockOrigionalPostInput := postEntity.NewPostInput{
+	mockUser := domain.NewUser("post_user_test")
+	mockRepostUser := domain.NewUser("repost_user_test")
+	mockOrigionalPostInput := domain.NewPostInput{
 		User:    mockUser,
 		Content: "original_post",
 	}
-	mockOriginalPost, _ := postEntity.NewPost(mockOrigionalPostInput)
-	mockRepostInput := postEntity.NewRepostQuoteInput{
+	mockOriginalPost, _ := domain.NewPost(mockOrigionalPostInput)
+	mockRepostInput := domain.NewRepostQuoteInput{
 		User:    mockRepostUser,
 		Post:    mockOriginalPost,
 		Content: "repost",
 	}
-	mockRepost, _ := postEntity.NewRepost(mockRepostInput)
+	mockRepost, _ := domain.NewRepost(mockRepostInput)
 
-	db := &database.InMemoryDB[postEntity.Post]{}
+	db := &database.InMemoryDB[domain.Post]{}
 	db.Insert(mockOriginalPost)
 	db.Insert(mockRepost)
 	postRepo := NewInMemoryPostRepo(db)

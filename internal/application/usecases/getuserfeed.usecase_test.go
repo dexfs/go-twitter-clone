@@ -1,7 +1,7 @@
 package app
 
 import (
-	postEntity "github.com/dexfs/go-twitter-clone/internal/posts"
+	"github.com/dexfs/go-twitter-clone/internal/domain"
 	"github.com/dexfs/go-twitter-clone/pkg/database"
 	"github.com/dexfs/go-twitter-clone/tests/mocks"
 	"reflect"
@@ -37,7 +37,7 @@ func TestExecute_WithEmptyUsername_ReturnsError(t *testing.T) {
 	getUserFeedUseCase, _ := NewGetUserFeedUseCase(mockUserRepo, postRepo)
 	userFeedOutput, err := getUserFeedUseCase.Execute("")
 
-	var expectedOutputItems []*postEntity.Post
+	var expectedOutputItems []*domain.Post
 	expectedOutputFeed := GetUserFeedUseCaseOutput{
 		items: expectedOutputItems,
 	}
@@ -64,7 +64,7 @@ func TestExecute_WithNonExistingUsername_ReturnsError(t *testing.T) {
 	getUserFeedUseCase, _ := NewGetUserFeedUseCase(mockUserRepo, postRepo)
 	userFeedOutput, err := getUserFeedUseCase.Execute("non-existing-user")
 
-	var expectedOutputItems []*postEntity.Post
+	var expectedOutputItems []*domain.Post
 	expectedOutputFeed := GetUserFeedUseCaseOutput{
 		items: expectedOutputItems,
 	}
@@ -119,7 +119,7 @@ func TestExecute_WithPostRepositoryError_ReturnsError(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
 	mockUser := mocks.UserSeed(TestMocks.MockUserDB, 1)
 	mockUserRepo := mocks.MakeInMemoryUserRepo(TestMocks.MockUserDB)
-	mockPostDB := &database.InMemoryDB[postEntity.Post]{}
+	mockPostDB := &database.InMemoryDB[domain.Post]{}
 	postRepo := mocks.MakeInMemoryPostRepo(mockPostDB)
 
 	userFeedUseCase, _ := NewGetUserFeedUseCase(mockUserRepo, postRepo)

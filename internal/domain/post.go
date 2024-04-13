@@ -1,15 +1,14 @@
-package posts
+package domain
 
 import (
 	"errors"
-	"github.com/dexfs/go-twitter-clone/internal/user"
 	"github.com/google/uuid"
 	"time"
 )
 
 type Post struct {
 	ID                     string
-	User                   *user.User
+	User                   *User
 	Content                string
 	CreatedAt              time.Time
 	IsQuote                bool
@@ -21,12 +20,12 @@ type Post struct {
 }
 
 type NewPostInput struct {
-	User    *user.User
+	User    *User
 	Content string
 }
 
 type NewRepostQuoteInput struct {
-	User    *user.User
+	User    *User
 	Post    *Post
 	Content string
 }

@@ -1,9 +1,8 @@
 package app
 
 import (
-	postInfraImpl "github.com/dexfs/go-twitter-clone/internal/posts/infra/db/repository"
-	"github.com/dexfs/go-twitter-clone/internal/user"
-	userInfraImpl "github.com/dexfs/go-twitter-clone/internal/user/infra/db/repository"
+	"github.com/dexfs/go-twitter-clone/internal/domain"
+	"github.com/dexfs/go-twitter-clone/internal/infra/repository/inmemory"
 	"github.com/dexfs/go-twitter-clone/tests/mocks"
 	"github.com/google/uuid"
 	"reflect"
@@ -12,9 +11,9 @@ import (
 
 func TestCreateQuotePostUseCase_WithNotFoundUser_ReturnsError(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
-	mockUserRepo := userInfraImpl.NewInMemoryUserRepo(TestMocks.MockUserDB)
-	postRepo := postInfraImpl.NewInMemoryPostRepo(TestMocks.MockPostDB)
-	mockNotFoundUser := user.NewUser("not_found_user")
+	mockUserRepo := inmemory.NewInMemoryUserRepo(TestMocks.MockUserDB)
+	postRepo := inmemory.NewInMemoryPostRepo(TestMocks.MockPostDB)
+	mockNotFoundUser := domain.NewUser("not_found_user")
 	createQuotePostUseCase := NewCreateQuotePostUseCase(mockUserRepo, postRepo)
 	useCaseInput := CreateQuotePostUseCaseInput{
 		UserID: mockNotFoundUser.ID,
@@ -38,8 +37,8 @@ func TestCreateQuotePostUseCase_WithNotFoundUser_ReturnsError(t *testing.T) {
 }
 func TestCreateQuotePostUseCase_WithNotFoundPost_ReturnsError(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
-	mockUserRepo := userInfraImpl.NewInMemoryUserRepo(TestMocks.MockUserDB)
-	postRepo := postInfraImpl.NewInMemoryPostRepo(TestMocks.MockPostDB)
+	mockUserRepo := inmemory.NewInMemoryUserRepo(TestMocks.MockUserDB)
+	postRepo := inmemory.NewInMemoryPostRepo(TestMocks.MockPostDB)
 	createQuotePostUseCase := NewCreateQuotePostUseCase(mockUserRepo, postRepo)
 	useCaseInput := CreateQuotePostUseCaseInput{
 		UserID: TestMocks.MockUserSeed[0].ID,
@@ -63,11 +62,11 @@ func TestCreateQuotePostUseCase_WithNotFoundPost_ReturnsError(t *testing.T) {
 }
 func TestCreateQuotePostUseCase_WithValidInput_ReturnsPostID(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
-	mockUserRepo := userInfraImpl.NewInMemoryUserRepo(TestMocks.MockUserDB)
-	mockQuoteUser := user.NewUser("quote_user")
+	mockUserRepo := inmemory.NewInMemoryUserRepo(TestMocks.MockUserDB)
+	mockQuoteUser := domain.NewUser("quote_user")
 	TestMocks.MockUserDB.Insert(mockQuoteUser)
 
-	postRepo := postInfraImpl.NewInMemoryPostRepo(TestMocks.MockPostDB)
+	postRepo := inmemory.NewInMemoryPostRepo(TestMocks.MockPostDB)
 	createQuotePostUseCase := NewCreateQuotePostUseCase(mockUserRepo, postRepo)
 	mockOriginalPost := TestMocks.MockPostsSeed[0]
 	useCaseInput := CreateQuotePostUseCaseInput{

@@ -1,16 +1,16 @@
-package repository
+package inmemory
 
 import (
-	userEntity "github.com/dexfs/go-twitter-clone/internal/user"
+	"github.com/dexfs/go-twitter-clone/internal/domain"
 	"github.com/dexfs/go-twitter-clone/pkg/database"
 	"strconv"
 	"testing"
 )
 
 func TestShouldReturnInsertedUser(t *testing.T) {
-	userTest := userEntity.NewUser("usuarion_test_1")
+	userTest := domain.NewUser("usuarion_test_1")
 
-	db := &database.InMemoryDB[userEntity.User]{}
+	db := &database.InMemoryDB[domain.User]{}
 	userRepo := NewInMemoryUserRepo(db)
 
 	userRepo.Insert(userTest)
@@ -27,10 +27,10 @@ func TestShouldReturnInsertedUser(t *testing.T) {
 }
 
 func TestShouldReturnUserByUsername(t *testing.T) {
-	userToFind := userEntity.NewUser("user_to_find")
-	db := &database.InMemoryDB[userEntity.User]{}
+	userToFind := domain.NewUser("user_to_find")
+	db := &database.InMemoryDB[domain.User]{}
 	for i := 0; i < 5; i++ {
-		newUser := userEntity.NewUser("username_" + strconv.Itoa(i))
+		newUser := domain.NewUser("username_" + strconv.Itoa(i))
 		db.Insert(newUser)
 	}
 	db.Insert(userToFind)
@@ -45,10 +45,10 @@ func TestShouldReturnUserByUsername(t *testing.T) {
 }
 
 func TestShouldRemoveUserByID(t *testing.T) {
-	userToDelete := userEntity.NewUser("user_to_find")
-	db := &database.InMemoryDB[userEntity.User]{}
+	userToDelete := domain.NewUser("user_to_find")
+	db := &database.InMemoryDB[domain.User]{}
 	for i := 0; i < 5; i++ {
-		newUser := userEntity.NewUser("username_" + strconv.Itoa(i))
+		newUser := domain.NewUser("username_" + strconv.Itoa(i))
 		db.Insert(newUser)
 	}
 	db.Insert(userToDelete)
