@@ -2,18 +2,15 @@ package main
 
 import (
 	"fmt"
+	"github.com/dexfs/go-twitter-clone/internal/application/handlers"
+	app "github.com/dexfs/go-twitter-clone/internal/application/usecases"
+	"github.com/dexfs/go-twitter-clone/internal/infra/repository/inmemory"
+	"github.com/dexfs/go-twitter-clone/tests/mocks"
 	"log"
 	"net/http"
 )
 
 // handlers
-var UserFeedHandler = func(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("User feed of" + r.PathValue("username")))
-}
-
-var UserInfoHandler = func(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("User info for " + r.PathValue("username")))
-}
 
 var PostCreateHandler = func(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Post"))
@@ -53,12 +50,10 @@ func NewAPIServer(addr string) *APIServer {
 
 func (s *APIServer) Run() error {
 	router := http.NewServeMux()
-
-	router.HandleFunc("GET /users/{username}/feed", UserFeedHandler)
-	router.HandleFunc("GET /users/{username}/info", UserInfoHandler)
-	router.HandleFunc("POST /posts", PostCreateHandler)
-	router.HandleFunc("POST /posts/repost", PostRepostHandler)
-	router.HandleFunc("POST /posts/quote", PostQuoteHandler)
+	s.iniUserRoutes(router)
+	//router.HandleFunc("POST /posts", PostCreateHandler)
+	//router.HandleFunc("POST /posts/repost", PostRepostHandler)
+	//router.HandleFunc("POST /posts/quote", PostQuoteHandler)
 	// router prefix
 	//router.Handle("/api/v1/", http.StripPrefix("/api/v1", router))
 
@@ -70,6 +65,27 @@ func (s *APIServer) Run() error {
 	log.Printf("API server listening on %s\n", s.addr)
 
 	return server.ListenAndServe()
+}
+
+func (s *APIServer) iniUserRoutes(router *http.ServeMux) {
+	// dabatase
+	dbMocks := mocks.GetTestMocks()
+
+	//userDb := &database.InMemoryDB[domain.User]{}
+	//postDb := &database.InMemoryDB[domain.Post]{}
+	// repos
+	userRepo := inmemory.NewInMemoryUserRepo(dbMocks.MockUserDB)
+	postRepo := inmemory.NewInMemoryPostRepo(dbMocks.MockPostDB)
+	// usecases
+	getUserFeed, err := app.NewGetUserFeedUseCase(userRepo, postRepo)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// handlers
+	userFeedHandler := handlers.NewGetFeedHandler(getUserFeed)
+	router.HandleFunc("GET /users/{username}/feed", userFeedHandler.Handle)
+	//router.HandleFunc("GET /users/{username}/info", handlers.UserInfoHandler)
 }
 
 func main() {
