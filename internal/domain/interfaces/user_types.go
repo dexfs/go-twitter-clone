@@ -5,6 +5,6 @@ import (
 )
 
 type UserRepository interface {
-	ByUsername(username string) (domain.User, error)
-	FindByID(id string) (domain.User, error)
+	ByUsername(username string) (*domain.User, error)
+	FindByID(id string) (*domain.User, error)
 }
