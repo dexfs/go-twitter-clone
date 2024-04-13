@@ -1,9 +1,8 @@
 package app
 
 import (
-	postInfraImpl "github.com/dexfs/go-twitter-clone/internal/posts/infra/db/repository"
-	"github.com/dexfs/go-twitter-clone/internal/user"
-	userInfraImpl "github.com/dexfs/go-twitter-clone/internal/user/infra/db/repository"
+	"github.com/dexfs/go-twitter-clone/internal/domain"
+	"github.com/dexfs/go-twitter-clone/internal/infra/repository/inmemory"
 	"github.com/dexfs/go-twitter-clone/tests/mocks"
 	"github.com/google/uuid"
 	"reflect"
@@ -12,9 +11,9 @@ import (
 
 func TestCreateRepostUseCase_WithNotFoundUser_ReturnsError(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
-	mockUserRepo := userInfraImpl.NewInMemoryUserRepo(TestMocks.MockUserDB)
-	postRepo := postInfraImpl.NewInMemoryPostRepo(TestMocks.MockPostDB)
-	mockNotFoundUser := user.NewUser("not_found_user")
+	mockUserRepo := inmemory.NewInMemoryUserRepo(TestMocks.MockUserDB)
+	postRepo := inmemory.NewInMemoryPostRepo(TestMocks.MockPostDB)
+	mockNotFoundUser := domain.NewUser("not_found_user")
 	createRepostUseCase := NewCreateRepostUseCase(mockUserRepo, postRepo)
 	useCaseInput := CreateRepostUseCaseInput{
 		UserID: mockNotFoundUser.ID,
@@ -37,8 +36,8 @@ func TestCreateRepostUseCase_WithNotFoundUser_ReturnsError(t *testing.T) {
 }
 func TestCreateRepostPostUseCase_WithNotFoundPost_ReturnsError(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
-	mockUserRepo := userInfraImpl.NewInMemoryUserRepo(TestMocks.MockUserDB)
-	postRepo := postInfraImpl.NewInMemoryPostRepo(TestMocks.MockPostDB)
+	mockUserRepo := inmemory.NewInMemoryUserRepo(TestMocks.MockUserDB)
+	postRepo := inmemory.NewInMemoryPostRepo(TestMocks.MockPostDB)
 	createRepostUseCase := NewCreateRepostUseCase(mockUserRepo, postRepo)
 	useCaseInput := CreateRepostUseCaseInput{
 		UserID: TestMocks.MockUserSeed[0].ID,
@@ -62,8 +61,8 @@ func TestCreateRepostPostUseCase_WithNotFoundPost_ReturnsError(t *testing.T) {
 
 func TestCreateRepostPostUseCase_WithPostOwner_ReturnsError(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
-	mockUserRepo := userInfraImpl.NewInMemoryUserRepo(TestMocks.MockUserDB)
-	postRepo := postInfraImpl.NewInMemoryPostRepo(TestMocks.MockPostDB)
+	mockUserRepo := inmemory.NewInMemoryUserRepo(TestMocks.MockUserDB)
+	postRepo := inmemory.NewInMemoryPostRepo(TestMocks.MockPostDB)
 	createRepostUseCase := NewCreateRepostUseCase(mockUserRepo, postRepo)
 	useCaseInput := CreateRepostUseCaseInput{
 		UserID: TestMocks.MockUserSeed[0].ID,
@@ -87,11 +86,11 @@ func TestCreateRepostPostUseCase_WithPostOwner_ReturnsError(t *testing.T) {
 
 func TestCreateRepostPostUseCase_WithValidInput_ReturnsPostID(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
-	mockUserRepo := userInfraImpl.NewInMemoryUserRepo(TestMocks.MockUserDB)
-	mockQuoteUser := user.NewUser("quote_user")
+	mockUserRepo := inmemory.NewInMemoryUserRepo(TestMocks.MockUserDB)
+	mockQuoteUser := domain.NewUser("quote_user")
 	TestMocks.MockUserDB.Insert(mockQuoteUser)
 
-	postRepo := postInfraImpl.NewInMemoryPostRepo(TestMocks.MockPostDB)
+	postRepo := inmemory.NewInMemoryPostRepo(TestMocks.MockPostDB)
 	mockOriginalPost := TestMocks.MockPostsSeed[0]
 
 	createRepostUseCase := NewCreateRepostUseCase(mockUserRepo, postRepo)
