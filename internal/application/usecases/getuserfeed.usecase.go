@@ -12,7 +12,7 @@ type GetUserFeedUseCase struct {
 }
 
 type GetUserFeedUseCaseOutput struct {
-	Items []*domain.Post
+	Items []*domain.Post `json:"items"`
 }
 
 func NewGetUserFeedUseCase(userRepo interfaces.UserRepository, postRepo interfaces.PostRepository) (*GetUserFeedUseCase, error) {

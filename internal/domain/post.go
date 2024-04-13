@@ -7,16 +7,16 @@ import (
 )
 
 type Post struct {
-	ID                     string
-	User                   *User
-	Content                string
-	CreatedAt              time.Time
-	IsQuote                bool
-	IsRepost               bool
-	OriginalPostID         string
-	OriginalPostContent    string
-	OriginalPostUserID     string
-	OriginalPostScreenName string
+	ID                     string    `json:"id"`
+	User                   *User     `json:"user"`
+	Content                string    `json:"content"`
+	CreatedAt              time.Time `json:"created_at"`
+	IsQuote                bool      `json:"is_quote"`
+	IsRepost               bool      `json:"is_repost"`
+	OriginalPostID         string    `json:"original_post_id"`
+	OriginalPostContent    string    `json:"original_post_content"`
+	OriginalPostUserID     string    `json:"original_post_user_id"`
+	OriginalPostScreenName string    `json:"original_post_screen_name"`
 }
 
 type NewPostInput struct {
