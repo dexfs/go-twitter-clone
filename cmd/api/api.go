@@ -25,11 +25,6 @@ var PostQuoteHandler = func(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Post Quote"))
 }
 
-//mux.HandleFunc("GET /users/{username}/feed", UserFeedHandler)
-//mux.HandleFunc("GET /users/{username}/info", func(w http.ResponseWriter, r *http.Request) {})
-//mux.HandleFunc("POST /posts", func(w http.ResponseWriter, r *http.Request) {})
-//mux.HandleFunc("POST /posts/repost", func(w http.ResponseWriter, r *http.Request) {})
-//mux.HandleFunc("POST /posts/quote", func(w http.ResponseWriter, r *http.Request) {})
 // Middlewares
 
 func RequestLoggerMiddleware(next http.Handler) http.HandlerFunc {
