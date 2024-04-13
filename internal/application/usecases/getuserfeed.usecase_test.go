@@ -24,8 +24,8 @@ func TestExecute_WithValidUsername_ReturnsFeedItems(t *testing.T) {
 		t.Errorf("want err=nil; got %v", err)
 	}
 
-	if len(userFeed.items) != 2 {
-		t.Errorf("want 2 posts; got %v", len(userFeed.items))
+	if len(userFeed.Items) != 2 {
+		t.Errorf("want 2 posts; got %v", len(userFeed.Items))
 	}
 }
 func TestExecute_WithEmptyUsername_ReturnsError(t *testing.T) {
@@ -39,11 +39,11 @@ func TestExecute_WithEmptyUsername_ReturnsError(t *testing.T) {
 
 	var expectedOutputItems []*domain.Post
 	expectedOutputFeed := GetUserFeedUseCaseOutput{
-		items: expectedOutputItems,
+		Items: expectedOutputItems,
 	}
 
 	if !reflect.DeepEqual(userFeedOutput, expectedOutputFeed) {
-		t.Errorf("want nil; got %v", userFeedOutput.items)
+		t.Errorf("want nil; got %v", userFeedOutput.Items)
 	}
 
 	if err == nil {
@@ -66,11 +66,11 @@ func TestExecute_WithNonExistingUsername_ReturnsError(t *testing.T) {
 
 	var expectedOutputItems []*domain.Post
 	expectedOutputFeed := GetUserFeedUseCaseOutput{
-		items: expectedOutputItems,
+		Items: expectedOutputItems,
 	}
 
 	if !reflect.DeepEqual(userFeedOutput, expectedOutputFeed) {
-		t.Errorf("want nil; got %v", userFeedOutput.items)
+		t.Errorf("want nil; got %v", userFeedOutput.Items)
 	}
 
 	if err == nil {
@@ -130,7 +130,7 @@ func TestExecute_WithPostRepositoryError_ReturnsError(t *testing.T) {
 		t.Errorf("want err=nil; got %v", err)
 	}
 
-	if len(userFeed.items) > 0 {
-		t.Errorf("want 0 posts; got %v", len(userFeed.items))
+	if len(userFeed.Items) > 0 {
+		t.Errorf("want 0 posts; got %v", len(userFeed.Items))
 	}
 }
