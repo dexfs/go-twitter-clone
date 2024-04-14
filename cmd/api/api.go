@@ -4,23 +4,14 @@ import (
 	"fmt"
 	"github.com/dexfs/go-twitter-clone/internal/application/handlers"
 	app "github.com/dexfs/go-twitter-clone/internal/application/usecases"
+	"github.com/dexfs/go-twitter-clone/internal/domain"
+	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
 	"github.com/dexfs/go-twitter-clone/internal/infra/repository/inmemory"
 	"github.com/dexfs/go-twitter-clone/tests/mocks"
 	"log"
 	"net/http"
+	"time"
 )
-
-// handlers
-
-var PostCreateHandler = func(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Post"))
-}
-var PostRepostHandler = func(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Post repost"))
-}
-var PostQuoteHandler = func(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Post Quote"))
-}
 
 // Middlewares
 
@@ -108,20 +99,31 @@ func (s *APIServer) initUserRoutes(router *http.ServeMux, gateways *Gateway) {
 		log.Fatal(err)
 	}
 
-	getUserInfo, err := app.NewGetUserInfoUseCase(userRepo)
+	getUserInfo, err := app.NewGetUserInfoUseCase(gateways.userRepo)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// handlers
-
-	// routes
 	router.HandleFunc("GET /users/{username}/info", handlers.NewGetUserInfoHandler(getUserInfo).Handle)
 	router.HandleFunc("GET /users/{username}/feed", handlers.NewGetFeedHandler(getUserFeed).Handle)
 }
+func (s *APIServer) initPostRoutes(router *http.ServeMux, gateways *Gateway) {
+
+	createPostUseCase := app.NewCreatePostUseCase(gateways.userRepo, gateways.postRepo)
+	createPostHandler := handlers.NewCreatePostHandler(createPostUseCase)
+	router.HandleFunc(createPostHandler.Path, createPostHandler.Handle)
+
+	createQuotePostUseCase := app.NewCreateQuotePostUseCase(gateways.userRepo, gateways.postRepo)
+	crateQuotePostHandler := handlers.NewCreateQuoteHandler(createQuotePostUseCase)
+	router.HandleFunc(crateQuotePostHandler.Path, crateQuotePostHandler.Handle)
+
+	createRepostUseCase := app.NewCreateRepostUseCase(gateways.userRepo, gateways.postRepo)
+	createRepostHandler := handlers.NewRepostHandler(createRepostUseCase)
+	router.HandleFunc(createRepostHandler.Path, createRepostHandler.Handle)
+}
 
 func main() {
-	server := NewAPIServer(":8001")
+	server := NewAPIServer("8001")
 
 	if err := server.Run(); err != nil {
 		fmt.Println(err.Error())
