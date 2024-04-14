@@ -19,12 +19,12 @@ func NewCreatePostUseCase(userRepo interfaces.UserRepository, postRepo interface
 }
 
 type CreatePostInput struct {
-	UserID  string
-	Content string
+	UserID  string `json:"user_id"`
+	Content string `json:"content"`
 }
 
 type CreatePostOutput struct {
-	PostID string
+	PostID string `json:"post_id"`
 }
 
 func (uc *CreatePostUseCase) Execute(input CreatePostInput) (CreatePostOutput, error) {

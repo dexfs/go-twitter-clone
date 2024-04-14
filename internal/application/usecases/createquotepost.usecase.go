@@ -6,9 +6,9 @@ import (
 )
 
 type CreateQuotePostUseCaseInput struct {
-	Quote  string
-	PostID string
-	UserID string
+	Quote  string `json:"quote"`
+	PostID string `json:"post_id"`
+	UserID string `json:"user_id"`
 }
 
 type CreateQuotePostUseCaseOutput struct {
@@ -20,8 +20,8 @@ type CreateQuotePostUseCase struct {
 	postRepo interfaces.PostRepository
 }
 
-func NewCreateQuotePostUseCase(userRepo interfaces.UserRepository, postRepo interfaces.PostRepository) CreateQuotePostUseCase {
-	return CreateQuotePostUseCase{userRepo, postRepo}
+func NewCreateQuotePostUseCase(userRepo interfaces.UserRepository, postRepo interfaces.PostRepository) *CreateQuotePostUseCase {
+	return &CreateQuotePostUseCase{userRepo, postRepo}
 }
 
 func (uc CreateQuotePostUseCase) Execute(input CreateQuotePostUseCaseInput) (CreateQuotePostUseCaseOutput, error) {
