@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 )
@@ -14,6 +15,13 @@ func JSON(w http.ResponseWriter, statusCode int, data interface{}) {
 			log.Fatal(err)
 		}
 	}
+}
+
+func DecodeJSON(r *http.Request, v interface{}) error {
+	if err := json.NewDecoder(r.Body).Decode(v); err != nil {
+		return fmt.Errorf("could not decode JSON: %v", err)
+	}
+	return nil
 }
 
 func JSONError(w http.ResponseWriter, statusCode int, err error) {
