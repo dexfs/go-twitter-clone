@@ -1,6 +1,7 @@
 package app
 
 import (
+	"errors"
 	"github.com/dexfs/go-twitter-clone/internal/domain"
 	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
 )
@@ -31,6 +32,11 @@ func (uc *CreateRepostUseCase) Execute(input CreateRepostUseCaseInput) (CreateRe
 
 	if err != nil {
 		return CreateRepostUseCaseOutput{}, err
+	}
+
+	reposted := uc.postRepo.HasPostBeenRepostedByUser(input.PostID, input.UserID)
+	if reposted {
+		return CreateRepostUseCaseOutput{}, errors.New("it is not possible repost a repost post")
 	}
 
 	post, err := uc.postRepo.FindByID(input.PostID)
