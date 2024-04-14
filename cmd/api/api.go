@@ -50,7 +50,7 @@ func NewAPIServer(addr string) *APIServer {
 
 func (s *APIServer) Run() error {
 	router := http.NewServeMux()
-	s.iniUserRoutes(router)
+	s.initUserRoutes(router)
 	//router.HandleFunc("POST /posts", PostCreateHandler)
 	//router.HandleFunc("POST /posts/repost", PostRepostHandler)
 	//router.HandleFunc("POST /posts/quote", PostQuoteHandler)
@@ -67,7 +67,7 @@ func (s *APIServer) Run() error {
 	return server.ListenAndServe()
 }
 
-func (s *APIServer) iniUserRoutes(router *http.ServeMux) {
+func (s *APIServer) initUserRoutes(router *http.ServeMux) {
 	// dabatase
 	dbMocks := mocks.GetTestMocks()
 
@@ -82,10 +82,16 @@ func (s *APIServer) iniUserRoutes(router *http.ServeMux) {
 		log.Fatal(err)
 	}
 
+	getUserInfo, err := app.NewGetUserInfoUseCase(userRepo)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// handlers
-	userFeedHandler := handlers.NewGetFeedHandler(getUserFeed)
-	router.HandleFunc("GET /users/{username}/feed", userFeedHandler.Handle)
-	//router.HandleFunc("GET /users/{username}/info", handlers.UserInfoHandler)
+
+	// routes
+	router.HandleFunc("GET /users/{username}/info", handlers.NewGetUserInfoHandler(getUserInfo).Handle)
+	router.HandleFunc("GET /users/{username}/feed", handlers.NewGetFeedHandler(getUserFeed).Handle)
 }
 
 func main() {
