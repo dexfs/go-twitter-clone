@@ -42,18 +42,23 @@ type APIServer struct {
 	addr string
 }
 
+type Gateway struct {
+	userRepo interfaces.UserRepository
+	postRepo interfaces.PostRepository
+}
+
 func NewAPIServer(addr string) *APIServer {
 	return &APIServer{
-		addr: addr,
+		addr: ":" + addr,
 	}
 }
 
 func (s *APIServer) Run() error {
 	router := http.NewServeMux()
-	s.initUserRoutes(router)
-	//router.HandleFunc("POST /posts", PostCreateHandler)
-	//router.HandleFunc("POST /posts/repost", PostRepostHandler)
-	//router.HandleFunc("POST /posts/quote", PostQuoteHandler)
+	gateways := s.initGateways()
+	s.initUserRoutes(router, gateways)
+	s.initPostRoutes(router, gateways)
+
 	// router prefix
 	//router.Handle("/api/v1/", http.StripPrefix("/api/v1", router))
 
@@ -67,17 +72,38 @@ func (s *APIServer) Run() error {
 	return server.ListenAndServe()
 }
 
-func (s *APIServer) initUserRoutes(router *http.ServeMux) {
-	// dabatase
+func (s *APIServer) initGateways() *Gateway {
 	dbMocks := mocks.GetTestMocks()
-
-	//userDb := &database.InMemoryDB[domain.User]{}
-	//postDb := &database.InMemoryDB[domain.Post]{}
-	// repos
+	dbMocks.MockUserDB.Insert(&domain.User{
+		ID:        "4cfe67a9-defc-42b9-8410-cb5086bec2f5",
+		Username:  "alucard",
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	})
+	dbMocks.MockUserDB.Insert(&domain.User{
+		ID:        "b8903f77-5d16-4176-890f-f597594ff952",
+		Username:  "alexander",
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	})
+	dbMocks.MockUserDB.Insert(&domain.User{
+		ID:        "75135a97-46be-405f-8948-0821290ca83e",
+		Username:  "seras_victoria",
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	})
 	userRepo := inmemory.NewInMemoryUserRepo(dbMocks.MockUserDB)
 	postRepo := inmemory.NewInMemoryPostRepo(dbMocks.MockPostDB)
-	// usecases
-	getUserFeed, err := app.NewGetUserFeedUseCase(userRepo, postRepo)
+
+	return &Gateway{
+		userRepo: userRepo,
+		postRepo: postRepo,
+	}
+}
+
+func (s *APIServer) initUserRoutes(router *http.ServeMux, gateways *Gateway) {
+
+	getUserFeed, err := app.NewGetUserFeedUseCase(gateways.userRepo, gateways.postRepo)
 	if err != nil {
 		log.Fatal(err)
 	}
