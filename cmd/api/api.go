@@ -2,34 +2,17 @@ package main
 
 import (
 	"fmt"
+	"github.com/dexfs/go-twitter-clone/internal/application/handlers"
+	app "github.com/dexfs/go-twitter-clone/internal/application/usecases"
+	"github.com/dexfs/go-twitter-clone/internal/domain"
+	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
+	"github.com/dexfs/go-twitter-clone/internal/infra/repository/inmemory"
+	"github.com/dexfs/go-twitter-clone/tests/mocks"
 	"log"
 	"net/http"
+	"time"
 )
 
-// handlers
-var UserFeedHandler = func(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("User feed of" + r.PathValue("username")))
-}
-
-var UserInfoHandler = func(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("User info for " + r.PathValue("username")))
-}
-
-var PostCreateHandler = func(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Post"))
-}
-var PostRepostHandler = func(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Post repost"))
-}
-var PostQuoteHandler = func(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Post Quote"))
-}
-
-//mux.HandleFunc("GET /users/{username}/feed", UserFeedHandler)
-//mux.HandleFunc("GET /users/{username}/info", func(w http.ResponseWriter, r *http.Request) {})
-//mux.HandleFunc("POST /posts", func(w http.ResponseWriter, r *http.Request) {})
-//mux.HandleFunc("POST /posts/repost", func(w http.ResponseWriter, r *http.Request) {})
-//mux.HandleFunc("POST /posts/quote", func(w http.ResponseWriter, r *http.Request) {})
 // Middlewares
 
 func RequestLoggerMiddleware(next http.Handler) http.HandlerFunc {
@@ -50,20 +33,23 @@ type APIServer struct {
 	addr string
 }
 
+type Gateway struct {
+	userRepo interfaces.UserRepository
+	postRepo interfaces.PostRepository
+}
+
 func NewAPIServer(addr string) *APIServer {
 	return &APIServer{
-		addr: addr,
+		addr: ":" + addr,
 	}
 }
 
 func (s *APIServer) Run() error {
 	router := http.NewServeMux()
+	gateways := s.initGateways()
+	s.initUserRoutes(router, gateways)
+	s.initPostRoutes(router, gateways)
 
-	router.HandleFunc("GET /users/{username}/feed", UserFeedHandler)
-	router.HandleFunc("GET /users/{username}/info", UserInfoHandler)
-	router.HandleFunc("POST /posts", PostCreateHandler)
-	router.HandleFunc("POST /posts/repost", PostRepostHandler)
-	router.HandleFunc("POST /posts/quote", PostQuoteHandler)
 	// router prefix
 	//router.Handle("/api/v1/", http.StripPrefix("/api/v1", router))
 
@@ -77,8 +63,67 @@ func (s *APIServer) Run() error {
 	return server.ListenAndServe()
 }
 
+func (s *APIServer) initGateways() *Gateway {
+	dbMocks := mocks.GetTestMocks()
+	dbMocks.MockUserDB.Insert(&domain.User{
+		ID:        "4cfe67a9-defc-42b9-8410-cb5086bec2f5",
+		Username:  "alucard",
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	})
+	dbMocks.MockUserDB.Insert(&domain.User{
+		ID:        "b8903f77-5d16-4176-890f-f597594ff952",
+		Username:  "alexander",
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	})
+	dbMocks.MockUserDB.Insert(&domain.User{
+		ID:        "75135a97-46be-405f-8948-0821290ca83e",
+		Username:  "seras_victoria",
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	})
+	userRepo := inmemory.NewInMemoryUserRepo(dbMocks.MockUserDB)
+	postRepo := inmemory.NewInMemoryPostRepo(dbMocks.MockPostDB)
+
+	return &Gateway{
+		userRepo: userRepo,
+		postRepo: postRepo,
+	}
+}
+
+func (s *APIServer) initUserRoutes(router *http.ServeMux, gateways *Gateway) {
+
+	getUserFeed, err := app.NewGetUserFeedUseCase(gateways.userRepo, gateways.postRepo)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	getUserInfo, err := app.NewGetUserInfoUseCase(gateways.userRepo)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	router.HandleFunc("GET /users/{username}/info", handlers.NewGetUserInfoHandler(getUserInfo).Handle)
+	router.HandleFunc("GET /users/{username}/feed", handlers.NewGetFeedHandler(getUserFeed).Handle)
+}
+func (s *APIServer) initPostRoutes(router *http.ServeMux, gateways *Gateway) {
+
+	createPostUseCase := app.NewCreatePostUseCase(gateways.userRepo, gateways.postRepo)
+	createPostHandler := handlers.NewCreatePostHandler(createPostUseCase)
+	router.HandleFunc(createPostHandler.Path, createPostHandler.Handle)
+
+	createQuotePostUseCase := app.NewCreateQuotePostUseCase(gateways.userRepo, gateways.postRepo)
+	crateQuotePostHandler := handlers.NewCreateQuoteHandler(createQuotePostUseCase)
+	router.HandleFunc(crateQuotePostHandler.Path, crateQuotePostHandler.Handle)
+
+	createRepostUseCase := app.NewCreateRepostUseCase(gateways.userRepo, gateways.postRepo)
+	createRepostHandler := handlers.NewRepostHandler(createRepostUseCase)
+	router.HandleFunc(createRepostHandler.Path, createRepostHandler.Handle)
+}
+
 func main() {
-	server := NewAPIServer(":8001")
+	server := NewAPIServer("8001")
 
 	if err := server.Run(); err != nil {
 		fmt.Println(err.Error())

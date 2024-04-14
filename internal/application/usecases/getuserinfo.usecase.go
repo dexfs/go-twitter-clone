@@ -11,7 +11,7 @@ type GetUserInfoUseCase struct {
 }
 
 type GetUserInfoOutput struct {
-	info *domain.User
+	*domain.User
 }
 
 func NewGetUserInfoUseCase(userRepo interfaces.UserRepository) (*GetUserInfoUseCase, error) {
@@ -22,10 +22,10 @@ func NewGetUserInfoUseCase(userRepo interfaces.UserRepository) (*GetUserInfoUseC
 }
 
 func (u *GetUserInfoUseCase) Execute(username string) (GetUserInfoOutput, error) {
-	result, err := u.userRepo.ByUsername(username)
+	user, err := u.userRepo.ByUsername(username)
 	if err != nil {
 		return GetUserInfoOutput{}, err
 	}
 
-	return GetUserInfoOutput{info: result}, nil
+	return GetUserInfoOutput{user}, nil
 }

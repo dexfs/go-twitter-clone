@@ -12,7 +12,7 @@ type GetUserFeedUseCase struct {
 }
 
 type GetUserFeedUseCaseOutput struct {
-	items []*domain.Post
+	Items []*domain.Post `json:"items"`
 }
 
 func NewGetUserFeedUseCase(userRepo interfaces.UserRepository, postRepo interfaces.PostRepository) (*GetUserFeedUseCase, error) {
@@ -43,6 +43,6 @@ func (uc *GetUserFeedUseCase) Execute(username string) (GetUserFeedUseCaseOutput
 	}
 
 	return GetUserFeedUseCaseOutput{
-		items: posts,
+		Items: posts,
 	}, nil
 }

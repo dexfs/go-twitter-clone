@@ -1,0 +1,553 @@
+{
+	"info": {
+		"_postman_id": "1fcd9960-07c1-4b70-9e70-3bf12c670d0c",
+		"name": "strider-posterr",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Feed Usuário",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/users/:username/feed",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"users",
+						":username",
+						"feed"
+					],
+					"variable": [
+						{
+							"key": "username",
+							"value": "alucard"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Feed Usuário",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/users/:username/feed?page=1&size=5",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"users",
+								":username",
+								"feed"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "5"
+								}
+							],
+							"variable": [
+								{
+									"key": "username",
+									"value": "anderson"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"items\": [\n        {\n            \"id\": \"aeb17370-7de5-48b6-bf88-7e943df38c6e\",\n            \"content\": \"Architecto quasi eaque. Aliquam consequatur dicta veniam sint rerum. Optio excepturi nemo totam atque non repudiandae facilis ducimus molestiae. Facilis sed vel ipsum esse aliquid.Consequatur qui excepturi incidunt ducimus non vero omnis provident. Minima eum quae quam labore. Enim assumenda accusantium recusandae omnis voluptas et rem.Consequuntur vitae vitae labore omnis totam minus doloremque itaque. Dicta voluptas adipisci quo et. Sit beatae sit sunt aut. Quos minima voluptatem. Omnis dolorum quo in dolorum et modi eligendi.{\",\n            \"user_id\": \"4cfe67a9-defc-42b9-8410-cb5086bec2f5\",\n            \"created_at\": \"2022-07-25T04:57:30.920Z\",\n            \"is_quote\": false,\n            \"is_repost\": false,\n            \"original_post_id\": null,\n            \"original_post_content\": null,\n            \"original_post_user_id\": null,\n            \"original_post_screen_name\": null\n        },\n        {\n            \"id\": \"079b5173-f98e-40fb-8c1b-32b1b2b4d921\",\n            \"content\": \"Facere est omnis cupiditate nostrum dolorum dolorem qui qui. Possimus est ut nam hic velit. Et officia explicabo doloremque repellendus aut.Quia porro odio quos. Voluptas voluptas consequuntur veritatis quae laudantium rem ut. Aperiam animi sit dolores similique et exercitationem non et voluptas. Quia dolorem ut quo et quia dolores.Voluptas dicta voluptas aut. Quam quibusdam iusto in occaecati saepe.{\",\n            \"user_id\": \"4cfe67a9-defc-42b9-8410-cb5086bec2f5\",\n            \"created_at\": \"2022-07-25T04:57:29.870Z\",\n            \"is_quote\": false,\n            \"is_repost\": false,\n            \"original_post_id\": null,\n            \"original_post_content\": null,\n            \"original_post_user_id\": null,\n            \"original_post_screen_name\": null\n        },\n        {\n            \"id\": \"3ff5d025-2cce-492f-899c-f430f88df556\",\n            \"content\": \"In architecto voluptas accusantium. Est voluptatum consequatur unde enim dolore eveniet non ad et. Ab nobis voluptatem. Voluptatum quia est odio ea dolores id quos et. Veniam voluptas vel.Cum aspernatur quibusdam non neque minima aut. Natus voluptatem ad dolores quod labore. Sed debitis asperiores eum quis rerum. Aut voluptas ea. Eum omnis expedita quia sit unde aut earum.Voluptas occaecati voluptatem sunt nobis dolor. Et impedit sed ut cumque qui et.{\",\n            \"user_id\": \"4cfe67a9-defc-42b9-8410-cb5086bec2f5\",\n            \"created_at\": \"2022-07-25T04:57:28.507Z\",\n            \"is_quote\": false,\n            \"is_repost\": false,\n            \"original_post_id\": null,\n            \"original_post_content\": null,\n            \"original_post_user_id\": null,\n            \"original_post_screen_name\": null\n        },\n        {\n            \"id\": \"95aa4c9b-88e4-4bb5-96a4-28e3ce231103\",\n            \"content\": \"Illum ut fuga quod. Veritatis nihil quod adipisci dolor voluptas. Optio adipisci aut voluptate quo neque est.Omnis est assumenda corrupti et autem modi est rerum dolorum. Consequatur odit fugiat eveniet aliquid omnis. Ut soluta aut minus vel quae.Aliquam beatae reprehenderit veritatis non molestiae. Asperiores debitis nostrum aut quod suscipit. Veniam culpa est numquam. Quod esse tempora laboriosam at soluta et dolore eum.{\",\n            \"user_id\": \"4cfe67a9-defc-42b9-8410-cb5086bec2f5\",\n            \"created_at\": \"2022-07-25T04:57:27.388Z\",\n            \"is_quote\": false,\n            \"is_repost\": false,\n            \"original_post_id\": null,\n            \"original_post_content\": null,\n            \"original_post_user_id\": null,\n            \"original_post_screen_name\": null\n        },\n        {\n            \"id\": \"85832d67-5764-4046-af12-eb76815fdffa\",\n            \"content\": \"Ea non ipsa deserunt natus pariatur et perspiciatis omnis. Aliquid ad debitis hic saepe accusamus.Non quasi illo qui saepe explicabo optio. Est a iusto dolores. Odit temporibus voluptatem ut quia ex. Nesciunt dignissimos ut quas deserunt dolor occaecati praesentium repudiandae.Qui aspernatur est eveniet. Reiciendis voluptatem amet sunt illum rerum. Aliquid est laudantium eos odio beatae dolor laborum quos sint.{\",\n            \"user_id\": \"4cfe67a9-defc-42b9-8410-cb5086bec2f5\",\n            \"created_at\": \"2022-07-25T04:44:41.142Z\",\n            \"is_quote\": false,\n            \"is_repost\": false,\n            \"original_post_id\": null,\n            \"original_post_content\": null,\n            \"original_post_user_id\": null,\n            \"original_post_screen_name\": null\n        }\n    ],\n    \"total\": 5,\n    \"per_page\": 5,\n    \"last_page\": 1,\n    \"current_page\": 1\n}"
+				},
+				{
+					"name": "Feed Usuário - usuário inexistente",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/users/:username/feed",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"users",
+								":username",
+								"feed"
+							],
+							"variable": [
+								{
+									"key": "username",
+									"value": "anderson"
+								}
+							]
+						}
+					},
+					"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+					"code": 422,
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"errors\": \"User not found\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Info Usuário",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/users/:username/info",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"users",
+						":username",
+						"info"
+					],
+					"variable": [
+						{
+							"key": "username",
+							"value": "anderson"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Info Usuário",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/users/:username/info",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"users",
+								":username",
+								"info"
+							],
+							"variable": [
+								{
+									"key": "username",
+									"value": "anderson"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"username\": \"anderson\",\n    \"joinedAt\": \"Jul 25, 2022\",\n    \"totalPosts\": 0\n}"
+				}
+			]
+		},
+		{
+			"name": "Listar Posts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/posts?size=10&all=false&user_id=4cfe67a9-defc-42b9-8410-cb5086bec2f5",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"posts"
+					],
+					"query": [
+						{
+							"key": "endDate",
+							"value": "2022-07-23",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "size",
+							"value": "10"
+						},
+						{
+							"key": "all",
+							"value": "false"
+						},
+						{
+							"key": "user_id",
+							"value": "4cfe67a9-defc-42b9-8410-cb5086bec2f5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Criar post",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"content\": \"{{$randomLoremSentences}}{{$randomLoremSentences}}{{$randomLoremSentences}}\",\n    \"user_id\": \"b8903f77-5d16-4176-890f-f597594ff952\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/posts/create",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"posts",
+						"create"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Criar post - Limite atingido",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"{{$randomLoremSentences}}{{$randomLoremSentences}}{{$randomLoremSentences}}{\",\n    \"user_id\": \"4cfe67a9-defc-42b9-8410-cb5086bec2f5\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/posts/create",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"posts",
+								"create"
+							]
+						}
+					},
+					"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+					"code": 422,
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"errors\": \"You reached your posts day limit \"\n}"
+				},
+				{
+					"name": "Criar post - Sucesso",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"{{$randomLoremSentences}}{{$randomLoremSentences}}{{$randomLoremSentences}}{\",\n    \"user_id\": \"4cfe67a9-defc-42b9-8410-cb5086bec2f5\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/posts/create",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"posts",
+								"create"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"id\": \"47f78f3d-6724-46dc-b22b-ebcd71033862\",\n    \"content\": \"Eos praesentium aut quisquam. Animi sit aut velit nihil sunt explicabo ex.Perferendis quam consectetur aut aut saepe. Quo consectetur voluptate quod doloremque maiores sit modi et vel. Accusantium eum fuga repellat sint excepturi et maxime consectetur. Ullam quidem aut asperiores sit nemo sint.Ut numquam dolores error nesciunt. Eum eveniet ad atque voluptas dignissimos cupiditate quos deserunt. Qui laboriosam eos incidunt earum velit qui. Quia iusto pariatur fuga dicta ipsa eaque voluptatibus. Atque minus consequuntur repudiandae beatae.\",\n    \"user_id\": \"b8903f77-5d16-4176-890f-f597594ff952\",\n    \"created_at\": \"2022-07-25T05:00:40.265Z\",\n    \"is_quote\": false,\n    \"is_repost\": false,\n    \"original_post_id\": null,\n    \"original_post_content\": null,\n    \"original_post_user_id\": null,\n    \"original_post_screen_name\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "Criar Repost",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"user_id\": \"4cfe67a9-defc-42b9-8410-cb5086bec2f5\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/posts/repost/:postId",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"posts",
+						"repost",
+						":postId"
+					],
+					"variable": [
+						{
+							"key": "postId",
+							"value": "47f78f3d-6724-46dc-b22b-ebcd71033862"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Criar Repost - Inválido",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"b8903f77-5d16-4176-890f-f597594ff952\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/posts/repost/:postId",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"posts",
+								"repost",
+								":postId"
+							],
+							"variable": [
+								{
+									"key": "postId",
+									"value": "7cc85bd2-0f28-4fc3-b0fa-7224c23433c3"
+								}
+							]
+						}
+					},
+					"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+					"code": 422,
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"errors\": [\n        \"It is not possible repost a repost post\"\n    ]\n}"
+				},
+				{
+					"name": "Criar Repost - Sucesso",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"b8903f77-5d16-4176-890f-f597594ff952\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/posts/repost/:postId",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"posts",
+								"repost",
+								":postId"
+							],
+							"variable": [
+								{
+									"key": "postId",
+									"value": "47f78f3d-6724-46dc-b22b-ebcd71033862"
+								}
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"id\": \"e6dc390c-9570-44fc-a498-4df0d559c971\",\n    \"user_id\": \"4cfe67a9-defc-42b9-8410-cb5086bec2f5\",\n    \"content\": null,\n    \"created_at\": \"2022-07-25T05:05:22.717Z\",\n    \"is_quote\": false,\n    \"is_repost\": true,\n    \"original_post_id\": \"47f78f3d-6724-46dc-b22b-ebcd71033862\",\n    \"original_post_content\": \"Eos praesentium aut quisquam. Animi sit aut velit nihil sunt explicabo ex.Perferendis quam consectetur aut aut saepe. Quo consectetur voluptate quod doloremque maiores sit modi et vel. Accusantium eum fuga repellat sint excepturi et maxime consectetur. Ullam quidem aut asperiores sit nemo sint.Ut numquam dolores error nesciunt. Eum eveniet ad atque voluptas dignissimos cupiditate quos deserunt. Qui laboriosam eos incidunt earum velit qui. Quia iusto pariatur fuga dicta ipsa eaque voluptatibus. Atque minus consequuntur repudiandae beatae.\",\n    \"original_post_user_id\": \"b8903f77-5d16-4176-890f-f597594ff952\",\n    \"original_post_screen_name\": \"alucard\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Criar Quote Post",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "quote",
+							"value": "Quote quote quote",
+							"type": "text"
+						},
+						{
+							"key": "user_id",
+							"value": "4cfe67a9-defc-42b9-8410-cb5086bec2f5",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/posts/quote/:postId",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"posts",
+						"quote",
+						":postId"
+					],
+					"variable": [
+						{
+							"key": "postId",
+							"value": "47f78f3d-6724-46dc-b22b-ebcd71033862"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Criar Quote Post - Inválido",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "quote",
+									"value": "Quote quote quote",
+									"type": "text"
+								},
+								{
+									"key": "user_id",
+									"value": "b8903f77-5d16-4176-890f-f597594ff952",
+									"type": "text"
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/posts/quote/:postId",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"posts",
+								"quote",
+								":postId"
+							],
+							"variable": [
+								{
+									"key": "postId",
+									"value": "4b6ed69b-42f0-485b-9786-c492822b4556"
+								}
+							]
+						}
+					},
+					"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+					"code": 422,
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"errors\": [\n        \"It is not possible a quote post of a quote post\"\n    ]\n}"
+				},
+				{
+					"name": "Criar Quote Post - Sucesso",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "quote",
+									"value": "Quote quote quote",
+									"type": "text"
+								},
+								{
+									"key": "user_id",
+									"value": "b8903f77-5d16-4176-890f-f597594ff952",
+									"type": "text"
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/posts/quote/:postId",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"posts",
+								"quote",
+								":postId"
+							],
+							"variable": [
+								{
+									"key": "postId",
+									"value": "4b6ed69b-42f0-485b-9786-c492822b4556"
+								}
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"id\": \"26b6425a-a626-4456-8cbc-981208999825\",\n    \"user_id\": \"4cfe67a9-defc-42b9-8410-cb5086bec2f5\",\n    \"content\": \"Quote quote quote\",\n    \"created_at\": \"2022-07-25T05:03:05.213Z\",\n    \"is_quote\": true,\n    \"is_repost\": false,\n    \"original_post_id\": \"47f78f3d-6724-46dc-b22b-ebcd71033862\",\n    \"original_post_content\": \"Eos praesentium aut quisquam. Animi sit aut velit nihil sunt explicabo ex.Perferendis quam consectetur aut aut saepe. Quo consectetur voluptate quod doloremque maiores sit modi et vel. Accusantium eum fuga repellat sint excepturi et maxime consectetur. Ullam quidem aut asperiores sit nemo sint.Ut numquam dolores error nesciunt. Eum eveniet ad atque voluptas dignissimos cupiditate quos deserunt. Qui laboriosam eos incidunt earum velit qui. Quia iusto pariatur fuga dicta ipsa eaque voluptatibus. Atque minus consequuntur repudiandae beatae.\",\n    \"original_post_user_id\": \"b8903f77-5d16-4176-890f-f597594ff952\",\n    \"original_post_screen_name\": \"alucard\"\n}"
+				}
+			]
+		}
+	]
+}

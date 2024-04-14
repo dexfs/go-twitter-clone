@@ -6,8 +6,8 @@ import (
 )
 
 type CreateRepostUseCaseInput struct {
-	PostID string
-	UserID string
+	PostID string `json:"post_id"`
+	UserID string `json:"user_id"`
 }
 
 type CreateRepostUseCaseOutput struct {
