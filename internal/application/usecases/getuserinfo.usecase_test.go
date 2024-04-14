@@ -20,8 +20,8 @@ func TestGetUserInfoUseCase_WithValidUsername_ReturnsUserInfo(t *testing.T) {
 		t.Errorf("error while executing getInfoUseCase: %v", err)
 	}
 
-	if output.info != usersSeed[0] {
-		t.Errorf("getInfoUseCase returned wrong user info, got %v, expected %v", output.info, usersSeed[0])
+	if output.User != usersSeed[0] {
+		t.Errorf("getInfoUseCase returned wrong user info, got %v, expected %v", output, usersSeed[0])
 	}
 }
 func TestGetUserInfoUseCase_WithNonExistingUsername_ReturnsError(t *testing.T) {
@@ -34,7 +34,7 @@ func TestGetUserInfoUseCase_WithNonExistingUsername_ReturnsError(t *testing.T) {
 		t.Errorf("should return error")
 	}
 
-	if output.info != nil {
+	if output.User != nil {
 		t.Errorf("should return empty user info")
 	}
 }
