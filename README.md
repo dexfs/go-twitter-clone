@@ -17,6 +17,27 @@ https://dbdiagram.io/d/go-twitter-clone-660b4e8437b7e33fd741027f
 
 ## Endpoints
 
+### Fixed data
+
+```javascript
+// users data
+const users = [
+    {
+        id: '4cfe67a9-defc-42b9-8410-cb5086bec2f5',
+        username: 'alucard',
+    },
+    {
+        id: 'b8903f77-5d16-4176-890f-f597594ff952',
+        username: 'alexander',
+
+    },
+    {
+        id: '75135a97-46be-405f-8948-0821290ca83e',
+        username: 'seras_victoria',
+    },
+];
+```
+
 ### Users
 ___
 **GET** /users/*:username*/feed
@@ -25,13 +46,11 @@ ___
 
 ### Posts
 ___
-**GET** /posts?user_id=UUID
-
 **POST** /posts - '{"content": "Post Content", "user_id": "uuid"}'
 
 **POST** /posts/repost - '{"content": "Post Content", "user_id": "uuid", "post_id": "UUID"}'
 
-**POST** /posts/quote - '{"content": "Post Content", "user_id": "uuid", "post_id": "UUID"}'
+**POST** /posts/quote - '{"quote": "Post Content", "user_id": "uuid", "post_id": "UUID"}'
 
 
 
