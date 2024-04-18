@@ -67,7 +67,7 @@ func TestUserInfoResource(t *testing.T) {
 
 	var got app.GetUserInfoOutput
 
-	if err := json.NewDecoder(response.Body).Decode(&got); err != nil {
+	if err := helperDecodeJSON(response.Body, &got); err != nil {
 		fmt.Errorf("could not decode JSON: %v", err)
 	}
 
@@ -95,7 +95,7 @@ func TestUserFeedResource(t *testing.T) {
 
 	var got app.GetUserFeedUseCaseOutput
 
-	if err := json.NewDecoder(response.Body).Decode(&got); err != nil {
+	if err := helperDecodeJSON(response.Body, &got); err != nil {
 		fmt.Errorf("could not decode JSON: %v", err)
 	}
 
@@ -154,7 +154,7 @@ func TestCreatePostResource(t *testing.T) {
 
 	var got app.CreatePostOutput
 
-	if err := json.NewDecoder(response.Body).Decode(&got); err != nil {
+	if err := helperDecodeJSON(response.Body, &got); err != nil {
 		fmt.Errorf("could not decode JSON: %v", err)
 	}
 
@@ -263,7 +263,7 @@ func TestCreateQuotePostResource(t *testing.T) {
 
 	var got app.CreateQuotePostUseCaseOutput
 
-	if err := json.NewDecoder(response.Body).Decode(&got); err != nil {
+	if err := helperDecodeJSON(response.Body, &got); err != nil {
 		t.Fatalf("could not decode JSON: %v", err)
 	}
 
@@ -291,14 +291,14 @@ func TestCreateQuotePostResource_WithTheOriginalUser_ReturnsError(t *testing.T) 
 	server.ServeHTTP(response, request)
 
 	var got struct {
-		Error string `json:"error"`
+		Error string
 	}
 
 	if err := helperDecodeJSON(response.Body, &got); err != nil {
 		t.Fatal(err)
 	}
 
-	want := "it is not possible repost your own post"
+	want := "it is not possible quote your own post"
 	if got.Error != want {
 		t.Errorf("got %s, want %s", got.Error, want)
 	}
@@ -331,7 +331,7 @@ func TestCreateRepostResource(t *testing.T) {
 
 	var got app.CreateRepostUseCaseOutput
 
-	if err := json.NewDecoder(response.Body).Decode(&got); err != nil {
+	if err := helperDecodeJSON(response.Body, &got); err != nil {
 		t.Fatalf("could not decode JSON: %v", err)
 	}
 
