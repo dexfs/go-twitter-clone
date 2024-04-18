@@ -205,8 +205,8 @@ func TestNewQuotepost_WithSameUserID_ReturnsError(t *testing.T) {
 		t.Errorf("Invalid instance of QuotePost returned")
 	}
 
-	if "it is not possible repost your own post" != err.Error() {
-		t.Errorf("Returned error is not correct. got '%s' want '%s'", err.Error(), "it is not possible repost your own post")
+	if "it is not possible quote your own post" != err.Error() {
+		t.Errorf("Returned error is not correct. got '%s' want '%s'", err.Error(), "it is not possible quote your own post")
 	}
 }
 func TestNewQuotepost_WithQuotepost_ReturnsError(t *testing.T) {
