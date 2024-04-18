@@ -93,7 +93,7 @@ func NewQuote(aNewQuoteInput NewRepostQuoteInput) (*Post, error) {
 	}
 
 	if aNewQuoteInput.Post.User.ID == aNewQuoteInput.User.ID {
-		return nil, errors.New("it is not possible repost your own post")
+		return nil, errors.New("it is not possible quote your own post")
 	}
 
 	return &Post{
