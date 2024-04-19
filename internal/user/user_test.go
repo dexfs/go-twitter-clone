@@ -1,6 +1,7 @@
-package domain
+package user_test
 
 import (
+	"github.com/dexfs/go-twitter-clone/internal/user"
 	"testing"
 	"time"
 )
@@ -20,7 +21,7 @@ func TestNewUser(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			sut := NewUser(test.input)
+			sut := user.NewUser(test.input)
 			if sut.Username != test.expected {
 				t.Errorf("got %q want %q", sut.Username, test.expected)
 			}

@@ -1,9 +1,10 @@
-package app
+package user_usecase_test
 
 import (
-	"github.com/dexfs/go-twitter-clone/internal/domain"
+	"github.com/dexfs/go-twitter-clone/internal/post"
+	user_usecase "github.com/dexfs/go-twitter-clone/internal/user/usecase"
+	"github.com/dexfs/go-twitter-clone/mocks"
 	"github.com/dexfs/go-twitter-clone/pkg/database"
-	"github.com/dexfs/go-twitter-clone/tests/mocks"
 	"reflect"
 	"testing"
 )
@@ -16,7 +17,7 @@ func TestExecute_WithValidUsername_ReturnsFeedItems(t *testing.T) {
 
 	postRepo := mocks.MakeInMemoryPostRepo(TestMocks.MockPostDB)
 
-	userFeedUseCase, _ := NewGetUserFeedUseCase(mockUserRepo, postRepo)
+	userFeedUseCase, _ := user_usecase.NewGetUserFeedUseCase(mockUserRepo, postRepo)
 
 	userFeed, err := userFeedUseCase.Execute(mockUser[0].Username)
 
@@ -25,7 +26,7 @@ func TestExecute_WithValidUsername_ReturnsFeedItems(t *testing.T) {
 	}
 
 	if len(userFeed.Items) != 2 {
-		t.Errorf("want 2 posts; got %v", len(userFeed.Items))
+		t.Errorf("want 2 post; got %v", len(userFeed.Items))
 	}
 }
 func TestExecute_WithEmptyUsername_ReturnsError(t *testing.T) {
@@ -34,11 +35,11 @@ func TestExecute_WithEmptyUsername_ReturnsError(t *testing.T) {
 	mocks.PostSeed(TestMocks.MockPostDB, mockUser[0], 2)
 	mockUserRepo := mocks.MakeInMemoryUserRepo(TestMocks.MockUserDB)
 	postRepo := mocks.MakeInMemoryPostRepo(TestMocks.MockPostDB)
-	getUserFeedUseCase, _ := NewGetUserFeedUseCase(mockUserRepo, postRepo)
+	getUserFeedUseCase, _ := user_usecase.NewGetUserFeedUseCase(mockUserRepo, postRepo)
 	userFeedOutput, err := getUserFeedUseCase.Execute("")
 
-	var expectedOutputItems []*domain.Post
-	expectedOutputFeed := GetUserFeedUseCaseOutput{
+	var expectedOutputItems []*post.Post
+	expectedOutputFeed := user_usecase.GetUserFeedUseCaseOutput{
 		Items: expectedOutputItems,
 	}
 
@@ -61,11 +62,11 @@ func TestExecute_WithNonExistingUsername_ReturnsError(t *testing.T) {
 	mocks.PostSeed(TestMocks.MockPostDB, mockUser[0], 2)
 	mockUserRepo := mocks.MakeInMemoryUserRepo(TestMocks.MockUserDB)
 	postRepo := mocks.MakeInMemoryPostRepo(TestMocks.MockPostDB)
-	getUserFeedUseCase, _ := NewGetUserFeedUseCase(mockUserRepo, postRepo)
+	getUserFeedUseCase, _ := user_usecase.NewGetUserFeedUseCase(mockUserRepo, postRepo)
 	userFeedOutput, err := getUserFeedUseCase.Execute("non-existing-user")
 
-	var expectedOutputItems []*domain.Post
-	expectedOutputFeed := GetUserFeedUseCaseOutput{
+	var expectedOutputItems []*post.Post
+	expectedOutputFeed := user_usecase.GetUserFeedUseCaseOutput{
 		Items: expectedOutputItems,
 	}
 
@@ -84,7 +85,7 @@ func TestExecute_WithNonExistingUsername_ReturnsError(t *testing.T) {
 func TestExecute_WithNilUserRepository_ReturnsError(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
 	postRepo := mocks.MakeInMemoryPostRepo(TestMocks.MockPostDB)
-	getUserFeedUseCase, err := NewGetUserFeedUseCase(nil, postRepo)
+	getUserFeedUseCase, err := user_usecase.NewGetUserFeedUseCase(nil, postRepo)
 
 	if getUserFeedUseCase != nil {
 		t.Errorf("Invalid instance of usecase")
@@ -101,7 +102,7 @@ func TestExecute_WithNilUserRepository_ReturnsError(t *testing.T) {
 func TestExecute_WithNilPostRepository_ReturnsError(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
 	mockUserRepo := mocks.MakeInMemoryUserRepo(TestMocks.MockUserDB)
-	getUserFeedUseCase, err := NewGetUserFeedUseCase(mockUserRepo, nil)
+	getUserFeedUseCase, err := user_usecase.NewGetUserFeedUseCase(mockUserRepo, nil)
 
 	if getUserFeedUseCase != nil {
 		t.Errorf("Invalid instance of usecase")
@@ -119,10 +120,10 @@ func TestExecute_WithPostRepositoryError_ReturnsError(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
 	mockUser := mocks.UserSeed(TestMocks.MockUserDB, 1)
 	mockUserRepo := mocks.MakeInMemoryUserRepo(TestMocks.MockUserDB)
-	mockPostDB := &database.InMemoryDB[domain.Post]{}
+	mockPostDB := &database.InMemoryDB[post.Post]{}
 	postRepo := mocks.MakeInMemoryPostRepo(mockPostDB)
 
-	userFeedUseCase, _ := NewGetUserFeedUseCase(mockUserRepo, postRepo)
+	userFeedUseCase, _ := user_usecase.NewGetUserFeedUseCase(mockUserRepo, postRepo)
 
 	userFeed, err := userFeedUseCase.Execute(mockUser[0].Username)
 
@@ -131,6 +132,6 @@ func TestExecute_WithPostRepositoryError_ReturnsError(t *testing.T) {
 	}
 
 	if len(userFeed.Items) > 0 {
-		t.Errorf("want 0 posts; got %v", len(userFeed.Items))
+		t.Errorf("want 0 post; got %v", len(userFeed.Items))
 	}
 }

@@ -1,9 +1,9 @@
-package app
+package user_usecase_test
 
 import (
-	"github.com/dexfs/go-twitter-clone/internal/domain"
-	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
 	"github.com/dexfs/go-twitter-clone/internal/infra/repository/inmemory"
+	"github.com/dexfs/go-twitter-clone/internal/user"
+	user_usecase "github.com/dexfs/go-twitter-clone/internal/user/usecase"
 	"github.com/dexfs/go-twitter-clone/pkg/database"
 	"strconv"
 	"testing"
@@ -14,7 +14,7 @@ func TestGetUserInfoUseCase_WithValidUsername_ReturnsUserInfo(t *testing.T) {
 	usersSeed := UserSeed(inMemoryDb)
 	userRepo := MakeRepoInstance(inMemoryDb)
 
-	getInfoUseCase, _ := NewGetUserInfoUseCase(userRepo)
+	getInfoUseCase, _ := user_usecase.NewGetUserInfoUseCase(userRepo)
 	output, err := getInfoUseCase.Execute(usersSeed[0].Username)
 	if err != nil {
 		t.Errorf("error while executing getInfoUseCase: %v", err)
@@ -28,7 +28,7 @@ func TestGetUserInfoUseCase_WithNonExistingUsername_ReturnsError(t *testing.T) {
 	inMemoryDb := MakeDb()
 	userRepo := MakeRepoInstance(inMemoryDb)
 
-	getInfoUseCase, _ := NewGetUserInfoUseCase(userRepo)
+	getInfoUseCase, _ := user_usecase.NewGetUserInfoUseCase(userRepo)
 	output, err := getInfoUseCase.Execute("")
 	if err == nil {
 		t.Errorf("should return error")
@@ -39,7 +39,7 @@ func TestGetUserInfoUseCase_WithNonExistingUsername_ReturnsError(t *testing.T) {
 	}
 }
 func TestGetUserInfoUseCase_WithNilUserRepository_ReturnsError(t *testing.T) {
-	_, err := NewGetUserInfoUseCase(nil)
+	_, err := user_usecase.NewGetUserInfoUseCase(nil)
 	if err == nil {
 		t.Errorf("should return error")
 	}
@@ -50,18 +50,18 @@ func TestGetUserInfoUseCase_WithNilUserRepository_ReturnsError(t *testing.T) {
 }
 
 // mocks
-func MakeDb() *database.InMemoryDB[domain.User] {
-	return &database.InMemoryDB[domain.User]{}
+func MakeDb() *database.InMemoryDB[user.User] {
+	return &database.InMemoryDB[user.User]{}
 }
-func MakeRepoInstance(db *database.InMemoryDB[domain.User]) interfaces.UserRepository {
-	repo := inmemory.NewInMemoryUserRepo(db)
+func MakeRepoInstance(db *database.InMemoryDB[user.User]) user.UserRepository {
+	repo := repo_inmemory.NewInMemoryUserRepo(db)
 	return repo
 }
-func UserSeed(db *database.InMemoryDB[domain.User]) []*domain.User {
-	users := make([]*domain.User, 5)
+func UserSeed(db *database.InMemoryDB[user.User]) []*user.User {
+	users := make([]*user.User, 5)
 	for i := 0; i < 5; i++ {
 		username := "user" + strconv.Itoa(i)
-		newUser := domain.NewUser(username)
+		newUser := user.NewUser(username)
 		db.Insert(newUser)
 		users[i] = newUser
 	}
