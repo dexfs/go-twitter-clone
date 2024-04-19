@@ -1,31 +1,32 @@
-package domain
+package post
 
 import (
 	"errors"
+	"github.com/dexfs/go-twitter-clone/internal/user"
 	"github.com/google/uuid"
 	"time"
 )
 
 type Post struct {
-	ID                     string    `json:"id"`
-	User                   *User     `json:"user"`
-	Content                string    `json:"content"`
-	CreatedAt              time.Time `json:"created_at"`
-	IsQuote                bool      `json:"is_quote"`
-	IsRepost               bool      `json:"is_repost"`
-	OriginalPostID         string    `json:"original_post_id"`
-	OriginalPostContent    string    `json:"original_post_content"`
-	OriginalPostUserID     string    `json:"original_post_user_id"`
-	OriginalPostScreenName string    `json:"original_post_screen_name"`
+	ID                     string     `json:"id"`
+	User                   *user.User `json:"user"`
+	Content                string     `json:"content"`
+	CreatedAt              time.Time  `json:"created_at"`
+	IsQuote                bool       `json:"is_quote"`
+	IsRepost               bool       `json:"is_repost"`
+	OriginalPostID         string     `json:"original_post_id"`
+	OriginalPostContent    string     `json:"original_post_content"`
+	OriginalPostUserID     string     `json:"original_post_user_id"`
+	OriginalPostScreenName string     `json:"original_post_screen_name"`
 }
 
 type NewPostInput struct {
-	User    *User
+	User    *user.User
 	Content string
 }
 
 type NewRepostQuoteInput struct {
-	User    *User
+	User    *user.User
 	Post    *Post
 	Content string
 }

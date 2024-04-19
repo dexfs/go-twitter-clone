@@ -20,7 +20,7 @@ https://dbdiagram.io/d/go-twitter-clone-660b4e8437b7e33fd741027f
 ### Fixed data
 
 ```javascript
-// users data
+// user data
 const users = [
     {
         id: '4cfe67a9-defc-42b9-8410-cb5086bec2f5',

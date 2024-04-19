@@ -1,6 +1,7 @@
-package domain
+package post
 
 import (
+	UserModule "github.com/dexfs/go-twitter-clone/internal/user"
 	"github.com/google/uuid"
 	"testing"
 	"time"
@@ -8,7 +9,7 @@ import (
 
 // Post
 func TestNewPost_WithValidInput_ReturnsOK(t *testing.T) {
-	user := NewUser("user post 1")
+	user := UserModule.NewUser("user post 1")
 	mockInput := NewPostInput{User: user, Content: "mock_content"}
 	newPost, _ := NewPost(mockInput)
 
@@ -55,7 +56,7 @@ func TestNewPost_WithNilUser_ReturnsError(t *testing.T) {
 
 }
 func TestNewPost_WithEmptyPostContent_ReturnsError(t *testing.T) {
-	mockUser := NewUser("test_user")
+	mockUser := UserModule.NewUser("test_user")
 	mockInput := NewPostInput{
 		User: mockUser,
 	}
@@ -72,8 +73,8 @@ func TestNewPost_WithEmptyPostContent_ReturnsError(t *testing.T) {
 
 // Repost
 func TestNewRepost_WithValidInput_ReturnsOK(t *testing.T) {
-	mockUser := NewUser("post_original_user")
-	mockUserRepost := NewUser("post_repost_user")
+	mockUser := UserModule.NewUser("post_original_user")
+	mockUserRepost := UserModule.NewUser("post_repost_user")
 	mockPostInput := NewPostInput{
 		User:    mockUser,
 		Content: "post_original_content",
@@ -143,8 +144,8 @@ func TestNewRepost_WithEmptyPostContent_ReturnsError(t *testing.T) {}
 
 // Quotepost
 func TestNewQuotepost_WithValidInput_ReturnsOK(t *testing.T) {
-	mockePostUser := NewUser("post_original_user")
-	mockQuotePostUser := NewUser("post_user_user")
+	mockePostUser := UserModule.NewUser("post_original_user")
+	mockQuotePostUser := UserModule.NewUser("post_user_user")
 	mockPostInput := NewPostInput{
 		User:    mockePostUser,
 		Content: "post_original_content",
@@ -277,7 +278,7 @@ func TestNewQuotepost_WithNilUser_ReturnsError(t *testing.T) {
 
 // in memory seeders
 func GenerateOriginalPost() *Post {
-	mockePostUser := NewUser("post_original_user")
+	mockePostUser := UserModule.NewUser("post_original_user")
 	mockPostInput := NewPostInput{
 		User:    mockePostUser,
 		Content: "post_original_content",
