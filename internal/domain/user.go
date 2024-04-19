@@ -12,10 +12,10 @@ type User struct {
 	UpdatedAt time.Time `json:"-"`
 }
 
-func NewUser(username string) *User {
+func NewUser(aUsername string) *User {
 	return &User{
 		ID:        uuid.NewString(),
-		Username:  username,
+		Username:  aUsername,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}

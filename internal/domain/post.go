@@ -19,17 +19,6 @@ type Post struct {
 	OriginalPostScreenName string    `json:"original_post_screen_name"`
 }
 
-type NewPostInput struct {
-	User    *User
-	Content string
-}
-
-type NewRepostQuoteInput struct {
-	User    *User
-	Post    *Post
-	Content string
-}
-
 func NewPost(aNewPost NewPostInput) (*Post, error) {
 	if aNewPost.User == nil {
 		return nil, errors.New("no user provided")
@@ -40,16 +29,12 @@ func NewPost(aNewPost NewPostInput) (*Post, error) {
 	}
 
 	return &Post{
-		ID:                     uuid.NewString(),
-		User:                   aNewPost.User,
-		Content:                aNewPost.Content,
-		CreatedAt:              time.Now(),
-		IsQuote:                false,
-		IsRepost:               false,
-		OriginalPostID:         "",
-		OriginalPostContent:    "",
-		OriginalPostUserID:     "",
-		OriginalPostScreenName: "",
+		ID:        uuid.NewString(),
+		User:      aNewPost.User,
+		Content:   aNewPost.Content,
+		CreatedAt: time.Now(),
+		IsQuote:   false,
+		IsRepost:  false,
 	}, nil
 }
 
