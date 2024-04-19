@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/dexfs/go-twitter-clone/internal/application/handlers"
-	app "github.com/dexfs/go-twitter-clone/internal/application/usecases"
+	"github.com/dexfs/go-twitter-clone/cmd/api/handlers"
+	"github.com/dexfs/go-twitter-clone/internal/application"
 	"github.com/dexfs/go-twitter-clone/internal/domain"
-	"github.com/dexfs/go-twitter-clone/internal/infra/repository/inmemory"
+	"github.com/dexfs/go-twitter-clone/internal/infra/repository/in_memory"
 	"github.com/dexfs/go-twitter-clone/tests/mocks"
 	"github.com/google/uuid"
 	"io"
@@ -24,9 +24,9 @@ func TestUserInfoResource_WithNoFoundUser_ReturnsErrorMessage(t *testing.T) {
 	server := http.NewServeMux()
 
 	dbMocks := mocks.GetTestMocks()
-	userRepo := inmemory.NewInMemoryUserRepo(dbMocks.MockUserDB)
+	userRepo := in_memory.NewInMemoryUserRepo(dbMocks.MockUserDB)
 
-	getUserInfoUseCase, err := app.NewGetUserInfoUseCase(userRepo)
+	getUserInfoUseCase, err := application.NewGetUserInfoUseCase(userRepo)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -53,9 +53,9 @@ func TestUserInfoResource(t *testing.T) {
 	server := http.NewServeMux()
 
 	dbMocks := mocks.GetTestMocks()
-	userRepo := inmemory.NewInMemoryUserRepo(dbMocks.MockUserDB)
+	userRepo := in_memory.NewInMemoryUserRepo(dbMocks.MockUserDB)
 
-	getUserInfoUseCase, err := app.NewGetUserInfoUseCase(userRepo)
+	getUserInfoUseCase, err := application.NewGetUserInfoUseCase(userRepo)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -65,7 +65,7 @@ func TestUserInfoResource(t *testing.T) {
 	response := httptest.NewRecorder()
 	server.ServeHTTP(response, request)
 
-	var got app.GetUserInfoOutput
+	var got application.GetUserInfoOutput
 
 	if err := helperDecodeJSON(response.Body, &got); err != nil {
 		fmt.Errorf("could not decode JSON: %v", err)
@@ -80,10 +80,10 @@ func TestUserFeedResource(t *testing.T) {
 	server := http.NewServeMux()
 
 	dbMocks := mocks.GetTestMocks()
-	userRepo := inmemory.NewInMemoryUserRepo(dbMocks.MockUserDB)
-	postRepo := inmemory.NewInMemoryPostRepo(dbMocks.MockPostDB)
+	userRepo := in_memory.NewInMemoryUserRepo(dbMocks.MockUserDB)
+	postRepo := in_memory.NewInMemoryPostRepo(dbMocks.MockPostDB)
 
-	getUserFeedUseCase, err := app.NewGetUserFeedUseCase(userRepo, postRepo)
+	getUserFeedUseCase, err := application.NewGetUserFeedUseCase(userRepo, postRepo)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -93,7 +93,7 @@ func TestUserFeedResource(t *testing.T) {
 	response := httptest.NewRecorder()
 	server.ServeHTTP(response, request)
 
-	var got app.GetUserFeedUseCaseOutput
+	var got application.GetUserFeedUseCaseOutput
 
 	if err := helperDecodeJSON(response.Body, &got); err != nil {
 		fmt.Errorf("could not decode JSON: %v", err)
@@ -107,10 +107,10 @@ func TestUserFeedResource_WithNoFoundUser_ReturnsErrorMessage(t *testing.T) {
 	server := http.NewServeMux()
 
 	dbMocks := mocks.GetTestMocks()
-	userRepo := inmemory.NewInMemoryUserRepo(dbMocks.MockUserDB)
-	postRepo := inmemory.NewInMemoryPostRepo(dbMocks.MockPostDB)
+	userRepo := in_memory.NewInMemoryUserRepo(dbMocks.MockUserDB)
+	postRepo := in_memory.NewInMemoryPostRepo(dbMocks.MockPostDB)
 
-	getUserFeedUseCase, err := app.NewGetUserFeedUseCase(userRepo, postRepo)
+	getUserFeedUseCase, err := application.NewGetUserFeedUseCase(userRepo, postRepo)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -139,9 +139,9 @@ func TestCreatePostResource(t *testing.T) {
 	server := http.NewServeMux()
 
 	dbMocks := mocks.GetTestMocks()
-	userRepo := inmemory.NewInMemoryUserRepo(dbMocks.MockUserDB)
-	postRepo := inmemory.NewInMemoryPostRepo(dbMocks.MockPostDB)
-	createPostUseCase := app.NewCreatePostUseCase(userRepo, postRepo)
+	userRepo := in_memory.NewInMemoryUserRepo(dbMocks.MockUserDB)
+	postRepo := in_memory.NewInMemoryPostRepo(dbMocks.MockPostDB)
+	createPostUseCase := application.NewCreatePostUseCase(userRepo, postRepo)
 	createPostHandler := handlers.NewCreatePostHandler(createPostUseCase)
 	server.HandleFunc(createPostHandler.Path, createPostHandler.Handle)
 
@@ -152,7 +152,7 @@ func TestCreatePostResource(t *testing.T) {
 	response := httptest.NewRecorder()
 	server.ServeHTTP(response, request)
 
-	var got app.CreatePostOutput
+	var got application.CreatePostOutput
 
 	if err := helperDecodeJSON(response.Body, &got); err != nil {
 		fmt.Errorf("could not decode JSON: %v", err)
@@ -176,9 +176,9 @@ func TestCreatePostResource_WithoutLimit_ReturnsError(t *testing.T) {
 		dbMocks.MockPostDB.Insert(aPost)
 	}
 
-	userRepo := inmemory.NewInMemoryUserRepo(dbMocks.MockUserDB)
-	postRepo := inmemory.NewInMemoryPostRepo(dbMocks.MockPostDB)
-	createPostUseCase := app.NewCreatePostUseCase(userRepo, postRepo)
+	userRepo := in_memory.NewInMemoryUserRepo(dbMocks.MockUserDB)
+	postRepo := in_memory.NewInMemoryPostRepo(dbMocks.MockPostDB)
+	createPostUseCase := application.NewCreatePostUseCase(userRepo, postRepo)
 	createPostHandler := handlers.NewCreatePostHandler(createPostUseCase)
 	server.HandleFunc(createPostHandler.Path, createPostHandler.Handle)
 
@@ -208,9 +208,9 @@ func TestCreatePostResource_WithNotFoundUser_ReturnsError(t *testing.T) {
 
 	dbMocks := mocks.GetTestMocks()
 
-	userRepo := inmemory.NewInMemoryUserRepo(dbMocks.MockUserDB)
-	postRepo := inmemory.NewInMemoryPostRepo(dbMocks.MockPostDB)
-	createPostUseCase := app.NewCreatePostUseCase(userRepo, postRepo)
+	userRepo := in_memory.NewInMemoryUserRepo(dbMocks.MockUserDB)
+	postRepo := in_memory.NewInMemoryPostRepo(dbMocks.MockPostDB)
+	createPostUseCase := application.NewCreatePostUseCase(userRepo, postRepo)
 	createPostHandler := handlers.NewCreatePostHandler(createPostUseCase)
 	server.HandleFunc(createPostHandler.Path, createPostHandler.Handle)
 
@@ -247,9 +247,9 @@ func TestCreateQuotePostResource(t *testing.T) {
 	}
 
 	dbMocks.MockUserDB.Insert(newUser)
-	userRepo := inmemory.NewInMemoryUserRepo(dbMocks.MockUserDB)
-	postRepo := inmemory.NewInMemoryPostRepo(dbMocks.MockPostDB)
-	createQuotePostUseCase := app.NewCreateQuotePostUseCase(userRepo, postRepo)
+	userRepo := in_memory.NewInMemoryUserRepo(dbMocks.MockUserDB)
+	postRepo := in_memory.NewInMemoryPostRepo(dbMocks.MockPostDB)
+	createQuotePostUseCase := application.NewCreateQuotePostUseCase(userRepo, postRepo)
 
 	createQuotePostHandler := handlers.NewCreateQuoteHandler(createQuotePostUseCase)
 	server.HandleFunc(createQuotePostHandler.Path, createQuotePostHandler.Handle)
@@ -261,7 +261,7 @@ func TestCreateQuotePostResource(t *testing.T) {
 	response := httptest.NewRecorder()
 	server.ServeHTTP(response, request)
 
-	var got app.CreateQuotePostUseCaseOutput
+	var got application.CreateQuotePostUseCaseOutput
 
 	if err := helperDecodeJSON(response.Body, &got); err != nil {
 		t.Fatalf("could not decode JSON: %v", err)
@@ -276,9 +276,9 @@ func TestCreateQuotePostResource_WithTheOriginalUser_ReturnsError(t *testing.T) 
 	server := http.NewServeMux()
 
 	dbMocks := mocks.GetTestMocks()
-	userRepo := inmemory.NewInMemoryUserRepo(dbMocks.MockUserDB)
-	postRepo := inmemory.NewInMemoryPostRepo(dbMocks.MockPostDB)
-	createQuotePostUseCase := app.NewCreateQuotePostUseCase(userRepo, postRepo)
+	userRepo := in_memory.NewInMemoryUserRepo(dbMocks.MockUserDB)
+	postRepo := in_memory.NewInMemoryPostRepo(dbMocks.MockPostDB)
+	createQuotePostUseCase := application.NewCreateQuotePostUseCase(userRepo, postRepo)
 
 	createQuotePostHandler := handlers.NewCreateQuoteHandler(createQuotePostUseCase)
 	server.HandleFunc(createQuotePostHandler.Path, createQuotePostHandler.Handle)
@@ -315,9 +315,9 @@ func TestCreateRepostResource(t *testing.T) {
 	}
 
 	dbMocks.MockUserDB.Insert(newUser)
-	userRepo := inmemory.NewInMemoryUserRepo(dbMocks.MockUserDB)
-	postRepo := inmemory.NewInMemoryPostRepo(dbMocks.MockPostDB)
-	createRepostUseCase := app.NewCreateRepostUseCase(userRepo, postRepo)
+	userRepo := in_memory.NewInMemoryUserRepo(dbMocks.MockUserDB)
+	postRepo := in_memory.NewInMemoryPostRepo(dbMocks.MockPostDB)
+	createRepostUseCase := application.NewCreateRepostUseCase(userRepo, postRepo)
 
 	createRepostHandler := handlers.NewRepostHandler(createRepostUseCase)
 	server.HandleFunc(createRepostHandler.Path, createRepostHandler.Handle)
@@ -329,7 +329,7 @@ func TestCreateRepostResource(t *testing.T) {
 	response := httptest.NewRecorder()
 	server.ServeHTTP(response, request)
 
-	var got app.CreateRepostUseCaseOutput
+	var got application.CreateRepostUseCaseOutput
 
 	if err := helperDecodeJSON(response.Body, &got); err != nil {
 		t.Fatalf("could not decode JSON: %v", err)
