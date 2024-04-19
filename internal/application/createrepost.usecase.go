@@ -1,9 +1,8 @@
-package app
+package application
 
 import (
 	"errors"
 	"github.com/dexfs/go-twitter-clone/internal/domain"
-	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
 )
 
 type CreateRepostUseCaseInput struct {
@@ -16,11 +15,11 @@ type CreateRepostUseCaseOutput struct {
 }
 
 type CreateRepostUseCase struct {
-	userRepo interfaces.UserRepository
-	postRepo interfaces.PostRepository
+	userRepo domain.UserRepository
+	postRepo domain.PostRepository
 }
 
-func NewCreateRepostUseCase(userRepo interfaces.UserRepository, postRepo interfaces.PostRepository) *CreateRepostUseCase {
+func NewCreateRepostUseCase(userRepo domain.UserRepository, postRepo domain.PostRepository) *CreateRepostUseCase {
 	return &CreateRepostUseCase{
 		userRepo: userRepo,
 		postRepo: postRepo,

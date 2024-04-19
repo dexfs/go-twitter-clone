@@ -1,8 +1,7 @@
-package app
+package application
 
 import (
 	"github.com/dexfs/go-twitter-clone/internal/domain"
-	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
 )
 
 type CreateQuotePostUseCaseInput struct {
@@ -16,11 +15,11 @@ type CreateQuotePostUseCaseOutput struct {
 }
 
 type CreateQuotePostUseCase struct {
-	userRepo interfaces.UserRepository
-	postRepo interfaces.PostRepository
+	userRepo domain.UserRepository
+	postRepo domain.PostRepository
 }
 
-func NewCreateQuotePostUseCase(userRepo interfaces.UserRepository, postRepo interfaces.PostRepository) *CreateQuotePostUseCase {
+func NewCreateQuotePostUseCase(userRepo domain.UserRepository, postRepo domain.PostRepository) *CreateQuotePostUseCase {
 	return &CreateQuotePostUseCase{userRepo, postRepo}
 }
 

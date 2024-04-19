@@ -1,9 +1,8 @@
-package app
+package application
 
 import (
 	"github.com/dexfs/go-twitter-clone/internal/domain"
-	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
-	"github.com/dexfs/go-twitter-clone/internal/infra/repository/inmemory"
+	"github.com/dexfs/go-twitter-clone/internal/infra/repository/in_memory"
 	"github.com/dexfs/go-twitter-clone/pkg/database"
 	"strconv"
 	"testing"
@@ -53,8 +52,8 @@ func TestGetUserInfoUseCase_WithNilUserRepository_ReturnsError(t *testing.T) {
 func MakeDb() *database.InMemoryDB[domain.User] {
 	return &database.InMemoryDB[domain.User]{}
 }
-func MakeRepoInstance(db *database.InMemoryDB[domain.User]) interfaces.UserRepository {
-	repo := inmemory.NewInMemoryUserRepo(db)
+func MakeRepoInstance(db *database.InMemoryDB[domain.User]) domain.UserRepository {
+	repo := in_memory.NewInMemoryUserRepo(db)
 	return repo
 }
 func UserSeed(db *database.InMemoryDB[domain.User]) []*domain.User {

@@ -1,20 +1,19 @@
-package app
+package application
 
 import (
 	"errors"
 	"github.com/dexfs/go-twitter-clone/internal/domain"
-	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
 )
 
 type GetUserInfoUseCase struct {
-	userRepo interfaces.UserRepository
+	userRepo domain.UserRepository
 }
 
 type GetUserInfoOutput struct {
 	*domain.User
 }
 
-func NewGetUserInfoUseCase(userRepo interfaces.UserRepository) (*GetUserInfoUseCase, error) {
+func NewGetUserInfoUseCase(userRepo domain.UserRepository) (*GetUserInfoUseCase, error) {
 	if userRepo == nil {
 		return nil, errors.New("userRepo cannot be nil")
 	}

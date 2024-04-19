@@ -1,8 +1,8 @@
-package app
+package application
 
 import (
 	"github.com/dexfs/go-twitter-clone/internal/domain"
-	"github.com/dexfs/go-twitter-clone/internal/infra/repository/inmemory"
+	"github.com/dexfs/go-twitter-clone/internal/infra/repository/in_memory"
 	"github.com/dexfs/go-twitter-clone/tests/mocks"
 	"reflect"
 	"strconv"
@@ -12,7 +12,7 @@ import (
 func TestCreatePostUseCase_WithUserHasReachedLimitPostForCurrentDay_ReturnsError(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
 	mockUser := TestMocks.MockUserSeed
-	mockUserRepo := inmemory.NewInMemoryUserRepo(TestMocks.MockUserDB)
+	mockUserRepo := in_memory.NewInMemoryUserRepo(TestMocks.MockUserDB)
 	for i := 0; i < 60; i++ {
 		postLoop, _ := domain.NewPost(domain.NewPostInput{
 			User:    mockUser[0],
@@ -21,7 +21,7 @@ func TestCreatePostUseCase_WithUserHasReachedLimitPostForCurrentDay_ReturnsError
 		TestMocks.MockPostDB.Insert(postLoop)
 	}
 
-	postRepo := inmemory.NewInMemoryPostRepo(TestMocks.MockPostDB)
+	postRepo := in_memory.NewInMemoryPostRepo(TestMocks.MockPostDB)
 
 	createPostUseCase := NewCreatePostUseCase(mockUserRepo, postRepo)
 	useCaseInput := CreatePostInput{
@@ -40,8 +40,8 @@ func TestCreatePostUseCase_WithUserHasReachedLimitPostForCurrentDay_ReturnsError
 }
 func TestCreatePostUseCase_WithNotFoundUser_ReturnsError(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
-	mockUserRepo := inmemory.NewInMemoryUserRepo(TestMocks.MockUserDB)
-	postRepo := inmemory.NewInMemoryPostRepo(TestMocks.MockPostDB)
+	mockUserRepo := in_memory.NewInMemoryUserRepo(TestMocks.MockUserDB)
+	postRepo := in_memory.NewInMemoryPostRepo(TestMocks.MockPostDB)
 	mockNotFoundUser := domain.NewUser("not_found_user")
 	createPostUseCase := NewCreatePostUseCase(mockUserRepo, postRepo)
 	useCaseInput := CreatePostInput{
@@ -67,8 +67,8 @@ func TestCreatePostUseCase_WithNotFoundUser_ReturnsError(t *testing.T) {
 func TestCreatePostUseCase_WithValidInput_ReturnsPostID(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
 	mockUser := TestMocks.MockUserSeed
-	mockUserRepo := inmemory.NewInMemoryUserRepo(TestMocks.MockUserDB)
-	postRepo := inmemory.NewInMemoryPostRepo(TestMocks.MockPostDB)
+	mockUserRepo := in_memory.NewInMemoryUserRepo(TestMocks.MockUserDB)
+	postRepo := in_memory.NewInMemoryPostRepo(TestMocks.MockPostDB)
 	createPostUseCase := NewCreatePostUseCase(mockUserRepo, postRepo)
 	useCaseInput := CreatePostInput{
 		UserID:  mockUser[0].ID,

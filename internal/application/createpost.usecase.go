@@ -1,17 +1,16 @@
-package app
+package application
 
 import (
 	"errors"
 	"github.com/dexfs/go-twitter-clone/internal/domain"
-	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
 )
 
 type CreatePostUseCase struct {
-	userRepo interfaces.UserRepository
-	postRepo interfaces.PostRepository
+	userRepo domain.UserRepository
+	postRepo domain.PostRepository
 }
 
-func NewCreatePostUseCase(userRepo interfaces.UserRepository, postRepo interfaces.PostRepository) *CreatePostUseCase {
+func NewCreatePostUseCase(userRepo domain.UserRepository, postRepo domain.PostRepository) *CreatePostUseCase {
 	return &CreatePostUseCase{
 		userRepo: userRepo,
 		postRepo: postRepo,
