@@ -2,8 +2,7 @@ package mocks
 
 import (
 	"github.com/dexfs/go-twitter-clone/internal/domain"
-	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
-	"github.com/dexfs/go-twitter-clone/internal/infra/repository/inmemory"
+	"github.com/dexfs/go-twitter-clone/internal/infra/repository/in_memory"
 	"github.com/dexfs/go-twitter-clone/pkg/database"
 	"strconv"
 )
@@ -12,12 +11,12 @@ import (
 func MakeDb[T any]() *database.InMemoryDB[T] {
 	return &database.InMemoryDB[T]{}
 }
-func MakeInMemoryUserRepo(db *database.InMemoryDB[domain.User]) interfaces.UserRepository {
-	repo := inmemory.NewInMemoryUserRepo(db)
+func MakeInMemoryUserRepo(db *database.InMemoryDB[domain.User]) domain.UserRepository {
+	repo := in_memory.NewInMemoryUserRepo(db)
 	return repo
 }
-func MakeInMemoryPostRepo(db *database.InMemoryDB[domain.Post]) interfaces.PostRepository {
-	repo := inmemory.NewInMemoryPostRepo(db)
+func MakeInMemoryPostRepo(db *database.InMemoryDB[domain.Post]) domain.PostRepository {
+	repo := in_memory.NewInMemoryPostRepo(db)
 	return repo
 }
 func UserSeed(db *database.InMemoryDB[domain.User], amount int) []*domain.User {
