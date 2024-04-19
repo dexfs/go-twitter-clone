@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	http2 "github.com/dexfs/go-twitter-clone/internal/application/handlers/http"
+	http_handlers "github.com/dexfs/go-twitter-clone/internal/application/handlers/http"
 	"github.com/dexfs/go-twitter-clone/internal/application/usecases/post_usecases"
 	"github.com/dexfs/go-twitter-clone/internal/application/usecases/user_usecases"
 	"github.com/dexfs/go-twitter-clone/internal/infra/post_repo"
@@ -106,21 +106,21 @@ func (s *APIServer) initUserRoutes(router *http.ServeMux, gateways *Gateway) {
 		log.Fatal(err)
 	}
 
-	router.HandleFunc("GET /users/{username}/info", http2.NewGetUserInfoHandler(getUserInfo).Handle)
-	router.HandleFunc("GET /users/{username}/feed", http2.NewGetFeedHandler(getUserFeed).Handle)
+	router.HandleFunc("GET /users/{username}/info", http_handlers.NewGetUserInfoHandler(getUserInfo).Handle)
+	router.HandleFunc("GET /users/{username}/feed", http_handlers.NewGetFeedHandler(getUserFeed).Handle)
 }
 func (s *APIServer) initPostRoutes(router *http.ServeMux, gateways *Gateway) {
 
 	createPostUseCase := post_usecases.NewCreatePostUseCase(gateways.userRepo, gateways.postRepo)
-	createPostHandler := http2.NewCreatePostHandler(createPostUseCase)
+	createPostHandler := http_handlers.NewCreatePostHandler(createPostUseCase)
 	router.HandleFunc(createPostHandler.Path, createPostHandler.Handle)
 
 	createQuotePostUseCase := post_usecases.NewCreateQuotePostUseCase(gateways.userRepo, gateways.postRepo)
-	crateQuotePostHandler := http2.NewCreateQuoteHandler(createQuotePostUseCase)
+	crateQuotePostHandler := http_handlers.NewCreateQuoteHandler(createQuotePostUseCase)
 	router.HandleFunc(crateQuotePostHandler.Path, crateQuotePostHandler.Handle)
 
 	createRepostUseCase := post_usecases.NewCreateRepostUseCase(gateways.userRepo, gateways.postRepo)
-	createRepostHandler := http2.NewRepostHandler(createRepostUseCase)
+	createRepostHandler := http_handlers.NewRepostHandler(createRepostUseCase)
 	router.HandleFunc(createRepostHandler.Path, createRepostHandler.Handle)
 }
 
