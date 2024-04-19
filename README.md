@@ -52,7 +52,65 @@ ___
 
 **POST** /posts/quote - '{"quote": "Post Content", "user_id": "uuid", "post_id": "UUID"}'
 
+### Project structure
+ ```bash
+ |-- cmd
+|   `-- api
+|       |-- api.go
+|       `-- api_test.go
+|-- docs
+|   |-- img.png
+|   `-- postman_collection.json
+|-- internal
+|   |-- infra
+|   |   `-- repository
+|   |       `-- inmemory
+|   |           |-- post_inmemory_impl_repo.go
+|   |           |-- post_inmemory_impl_repo_test.go
+|   |           |-- user_inmemory_impl_repo.go
+|   |           `-- user_inmemory_impl_repo_test.go
+|   |-- post
+|   |   |-- handler
+|   |   |   `-- post.go
+|   |   |-- usecase
+|   |   |   |-- createpost.usecase.go
+|   |   |   |-- createpost.usecase_test.go
+|   |   |   |-- createquotepost.usecase.go
+|   |   |   |-- createquotepost.usecase_test.go
+|   |   |   |-- createrepost.usecase.go
+|   |   |   `-- createrepost.usecase_test.go
+|   |   |-- post.go
+|   |   |-- post_test.go
+|   |   `-- types.go
+|   `-- user
+|       |-- handler
+|       |   `-- user.go
+|       |-- usecase
+|       |   |-- getuserfeed.usecase.go
+|       |   |-- getuserfeed.usecase_test.go
+|       |   |-- getuserinfo.usecase.go
+|       |   `-- getuserinfo.usecase_test.go
+|       |-- types.go
+|       |-- user.go
+|       `-- user_test.go
+|-- mocks
+|   `-- mocks.go
+|-- pkg
+|   |-- database
+|   |   |-- basedatabase.go
+|   |   `-- inmemory_db.go
+|   `-- helpers
+|       |-- hdates.go
+|       `-- helpers.go
+|-- tests
+|-- go.mod
+|-- go.sum
+|-- Makefile
+`-- README.md
 
+18 directories, 35 files
+
+ ```
 
 ## Styleguide 
 
