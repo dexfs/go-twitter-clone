@@ -53,6 +53,66 @@ ___
 **POST** /posts/quote - '{"quote": "Post Content", "user_id": "uuid", "post_id": "UUID"}'
 
 
+### Project Structure
+```bash
+|-- cmd
+|   `-- api
+|       |-- api.go
+|       `-- api_test.go
+|-- docs
+|   |-- img.png
+|   `-- postman_collection.json
+|-- internal
+|   |-- application
+|   |   |-- handlers
+|   |   |   |-- http
+|   |   |   |   |-- post.go
+|   |   |   |   `-- user.go
+|   |   |   `-- helpers.go
+|   |   `-- usecases
+|   |       |-- post_usecases
+|   |       |   |-- create_post.go
+|   |       |   |-- create_post_test.go
+|   |       |   |-- create_quotepost.go
+|   |       |   |-- create_quotepost_test.go
+|   |       |   |-- create_repost.go
+|   |       |   `-- create_repost_test.go
+|   |       `-- user_usecases
+|   |           |-- getuserfeed_usecase.go
+|   |           |-- getuserfeed_usecase_test.go
+|   |           |-- getuserinfo_usecase.go
+|   |           `-- getuserinfo_usecase_test.go
+|   |-- infra
+|   |   |-- post_repo
+|   |   |   |-- inmemory_repo.go
+|   |   |   `-- inmemory_repo_test.go
+|   |   `-- user_repo
+|   |       |-- inmemory_repo.go
+|   |       `-- inmemory_repo_test.go
+|   |-- post
+|   |   |-- entity.go
+|   |   |-- entity_test.go
+|   |   `-- types.go
+|   `-- user
+|       |-- entity.go
+|       |-- entity_test.go
+|       `-- types.go
+|-- pkg
+|   |-- database
+|   |   |-- basedatabase.go
+|   |   `-- inmemory_db.go
+|   `-- shared
+|       `-- helpers
+|           `-- hdates.go
+|-- tests
+|   `-- mocks
+|       `-- mocks.go
+|-- go.mod
+|-- go.sum
+|-- Makefile
+`-- README.md
+
+```
 
 ## Styleguide 
 
