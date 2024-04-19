@@ -2,12 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/dexfs/go-twitter-clone/internal/application/handlers"
-	app "github.com/dexfs/go-twitter-clone/internal/application/usecases"
-	"github.com/dexfs/go-twitter-clone/internal/domain"
-	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
 	"github.com/dexfs/go-twitter-clone/internal/infra/repository/inmemory"
-	"github.com/dexfs/go-twitter-clone/tests/mocks"
+	"github.com/dexfs/go-twitter-clone/internal/post"
+	post_handler "github.com/dexfs/go-twitter-clone/internal/post/handler"
+	post_usecase "github.com/dexfs/go-twitter-clone/internal/post/usecase"
+	"github.com/dexfs/go-twitter-clone/internal/user"
+	user_handler "github.com/dexfs/go-twitter-clone/internal/user/handler"
+	user_usecase "github.com/dexfs/go-twitter-clone/internal/user/usecase"
+	"github.com/dexfs/go-twitter-clone/mocks"
 	"log"
 	"net/http"
 	"time"
@@ -34,8 +36,8 @@ type APIServer struct {
 }
 
 type Gateway struct {
-	userRepo interfaces.UserRepository
-	postRepo interfaces.PostRepository
+	userRepo user.UserRepository
+	postRepo post.PostRepository
 }
 
 func NewAPIServer(addr string) *APIServer {
@@ -65,26 +67,26 @@ func (s *APIServer) Run() error {
 
 func (s *APIServer) initGateways() *Gateway {
 	dbMocks := mocks.GetTestMocks()
-	dbMocks.MockUserDB.Insert(&domain.User{
+	dbMocks.MockUserDB.Insert(&user.User{
 		ID:        "4cfe67a9-defc-42b9-8410-cb5086bec2f5",
 		Username:  "alucard",
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	})
-	dbMocks.MockUserDB.Insert(&domain.User{
+	dbMocks.MockUserDB.Insert(&user.User{
 		ID:        "b8903f77-5d16-4176-890f-f597594ff952",
 		Username:  "alexander",
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	})
-	dbMocks.MockUserDB.Insert(&domain.User{
+	dbMocks.MockUserDB.Insert(&user.User{
 		ID:        "75135a97-46be-405f-8948-0821290ca83e",
 		Username:  "seras_victoria",
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	})
-	userRepo := inmemory.NewInMemoryUserRepo(dbMocks.MockUserDB)
-	postRepo := inmemory.NewInMemoryPostRepo(dbMocks.MockPostDB)
+	userRepo := repo_inmemory.NewInMemoryUserRepo(dbMocks.MockUserDB)
+	postRepo := repo_inmemory.NewInMemoryPostRepo(dbMocks.MockPostDB)
 
 	return &Gateway{
 		userRepo: userRepo,
@@ -94,31 +96,31 @@ func (s *APIServer) initGateways() *Gateway {
 
 func (s *APIServer) initUserRoutes(router *http.ServeMux, gateways *Gateway) {
 
-	getUserFeed, err := app.NewGetUserFeedUseCase(gateways.userRepo, gateways.postRepo)
+	getUserFeed, err := user_usecase.NewGetUserFeedUseCase(gateways.userRepo, gateways.postRepo)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	getUserInfo, err := app.NewGetUserInfoUseCase(gateways.userRepo)
+	getUserInfo, err := user_usecase.NewGetUserInfoUseCase(gateways.userRepo)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	router.HandleFunc("GET /users/{username}/info", handlers.NewGetUserInfoHandler(getUserInfo).Handle)
-	router.HandleFunc("GET /users/{username}/feed", handlers.NewGetFeedHandler(getUserFeed).Handle)
+	router.HandleFunc("GET /users/{username}/info", user_handler.NewGetUserInfoHandler(getUserInfo).Handle)
+	router.HandleFunc("GET /users/{username}/feed", user_handler.NewGetFeedHandler(getUserFeed).Handle)
 }
 func (s *APIServer) initPostRoutes(router *http.ServeMux, gateways *Gateway) {
 
-	createPostUseCase := app.NewCreatePostUseCase(gateways.userRepo, gateways.postRepo)
-	createPostHandler := handlers.NewCreatePostHandler(createPostUseCase)
+	createPostUseCase := post_usecase.NewCreatePostUseCase(gateways.userRepo, gateways.postRepo)
+	createPostHandler := post_handler.NewCreatePostHandler(createPostUseCase)
 	router.HandleFunc(createPostHandler.Path, createPostHandler.Handle)
 
-	createQuotePostUseCase := app.NewCreateQuotePostUseCase(gateways.userRepo, gateways.postRepo)
-	crateQuotePostHandler := handlers.NewCreateQuoteHandler(createQuotePostUseCase)
+	createQuotePostUseCase := post_usecase.NewCreateQuotePostUseCase(gateways.userRepo, gateways.postRepo)
+	crateQuotePostHandler := post_handler.NewCreateQuoteHandler(createQuotePostUseCase)
 	router.HandleFunc(crateQuotePostHandler.Path, crateQuotePostHandler.Handle)
 
-	createRepostUseCase := app.NewCreateRepostUseCase(gateways.userRepo, gateways.postRepo)
-	createRepostHandler := handlers.NewRepostHandler(createRepostUseCase)
+	createRepostUseCase := post_usecase.NewCreateRepostUseCase(gateways.userRepo, gateways.postRepo)
+	createRepostHandler := post_handler.NewRepostHandler(createRepostUseCase)
 	router.HandleFunc(createRepostHandler.Path, createRepostHandler.Handle)
 }
 
