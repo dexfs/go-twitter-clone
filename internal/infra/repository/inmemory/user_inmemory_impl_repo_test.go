@@ -1,17 +1,18 @@
-package inmemory
+package repo_inmemory_test
 
 import (
-	"github.com/dexfs/go-twitter-clone/internal/domain"
+	repo_inmemory "github.com/dexfs/go-twitter-clone/internal/infra/repository/inmemory"
+	"github.com/dexfs/go-twitter-clone/internal/user"
 	"github.com/dexfs/go-twitter-clone/pkg/database"
 	"strconv"
 	"testing"
 )
 
 func TestShouldReturnInsertedUser(t *testing.T) {
-	userTest := domain.NewUser("usuarion_test_1")
+	userTest := user.NewUser("usuarion_test_1")
 
-	db := &database.InMemoryDB[domain.User]{}
-	userRepo := NewInMemoryUserRepo(db)
+	db := &database.InMemoryDB[user.User]{}
+	userRepo := repo_inmemory.NewInMemoryUserRepo(db)
 
 	userRepo.Insert(userTest)
 
@@ -27,15 +28,15 @@ func TestShouldReturnInsertedUser(t *testing.T) {
 }
 
 func TestShouldReturnUserByUsername(t *testing.T) {
-	userToFind := domain.NewUser("user_to_find")
-	db := &database.InMemoryDB[domain.User]{}
+	userToFind := user.NewUser("user_to_find")
+	db := &database.InMemoryDB[user.User]{}
 	for i := 0; i < 5; i++ {
-		newUser := domain.NewUser("username_" + strconv.Itoa(i))
+		newUser := user.NewUser("username_" + strconv.Itoa(i))
 		db.Insert(newUser)
 	}
 	db.Insert(userToFind)
 
-	userRepo := NewInMemoryUserRepo(db)
+	userRepo := repo_inmemory.NewInMemoryUserRepo(db)
 
 	foundUser, _ := userRepo.ByUsername(userToFind.Username)
 
@@ -45,15 +46,15 @@ func TestShouldReturnUserByUsername(t *testing.T) {
 }
 
 func TestShouldRemoveUserByID(t *testing.T) {
-	userToDelete := domain.NewUser("user_to_find")
-	db := &database.InMemoryDB[domain.User]{}
+	userToDelete := user.NewUser("user_to_find")
+	db := &database.InMemoryDB[user.User]{}
 	for i := 0; i < 5; i++ {
-		newUser := domain.NewUser("username_" + strconv.Itoa(i))
+		newUser := user.NewUser("username_" + strconv.Itoa(i))
 		db.Insert(newUser)
 	}
 	db.Insert(userToDelete)
 
-	userRepo := NewInMemoryUserRepo(db)
+	userRepo := repo_inmemory.NewInMemoryUserRepo(db)
 
 	userRepo.Remove(userToDelete)
 
