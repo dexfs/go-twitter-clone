@@ -1,15 +1,10 @@
-package interfaces
-
-import (
-	"github.com/dexfs/go-twitter-clone/internal/domain"
-)
+package post
 
 type ID string
-type Posts []*domain.Post
+type Posts []*Post
 type Count uint64
 type PostingLimitReached bool
 type HasRepost bool
-type Post *domain.Post
 
 type PostRepository interface {
 	GetAll() Posts
@@ -17,6 +12,6 @@ type PostRepository interface {
 	HasPostBeenRepostedByUser(postID string, userID string) HasRepost
 	HasReachedPostingLimitDay(userId string, limit uint64) PostingLimitReached
 	GetFeedByUserID(userID string) Posts
-	Insert(item *domain.Post)
-	FindByID(id string) (*domain.Post, error)
+	Insert(item *Post)
+	FindByID(id string) (*Post, error)
 }

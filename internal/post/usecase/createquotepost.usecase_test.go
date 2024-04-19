@@ -1,9 +1,10 @@
-package app
+package post_usecase_test
 
 import (
-	"github.com/dexfs/go-twitter-clone/internal/domain"
 	"github.com/dexfs/go-twitter-clone/internal/infra/repository/inmemory"
-	"github.com/dexfs/go-twitter-clone/tests/mocks"
+	post_usecase "github.com/dexfs/go-twitter-clone/internal/post/usecase"
+	"github.com/dexfs/go-twitter-clone/internal/user"
+	"github.com/dexfs/go-twitter-clone/mocks"
 	"github.com/google/uuid"
 	"reflect"
 	"testing"
@@ -11,11 +12,11 @@ import (
 
 func TestCreateQuotePostUseCase_WithNotFoundUser_ReturnsError(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
-	mockUserRepo := inmemory.NewInMemoryUserRepo(TestMocks.MockUserDB)
-	postRepo := inmemory.NewInMemoryPostRepo(TestMocks.MockPostDB)
-	mockNotFoundUser := domain.NewUser("not_found_user")
-	createQuotePostUseCase := NewCreateQuotePostUseCase(mockUserRepo, postRepo)
-	useCaseInput := CreateQuotePostUseCaseInput{
+	mockUserRepo := repo_inmemory.NewInMemoryUserRepo(TestMocks.MockUserDB)
+	postRepo := repo_inmemory.NewInMemoryPostRepo(TestMocks.MockPostDB)
+	mockNotFoundUser := user.NewUser("not_found_user")
+	createQuotePostUseCase := post_usecase.NewCreateQuotePostUseCase(mockUserRepo, postRepo)
+	useCaseInput := post_usecase.CreateQuotePostUseCaseInput{
 		UserID: mockNotFoundUser.ID,
 		PostID: TestMocks.MockPostsSeed[0].ID,
 		Quote:  "not found user",
@@ -23,7 +24,7 @@ func TestCreateQuotePostUseCase_WithNotFoundUser_ReturnsError(t *testing.T) {
 
 	output, err := createQuotePostUseCase.Execute(useCaseInput)
 
-	if !reflect.DeepEqual(output, CreateQuotePostUseCaseOutput{}) {
+	if !reflect.DeepEqual(output, post_usecase.CreateQuotePostUseCaseOutput{}) {
 		t.Errorf("should report user not found, got: %v", output)
 	}
 
@@ -37,10 +38,10 @@ func TestCreateQuotePostUseCase_WithNotFoundUser_ReturnsError(t *testing.T) {
 }
 func TestCreateQuotePostUseCase_WithNotFoundPost_ReturnsError(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
-	mockUserRepo := inmemory.NewInMemoryUserRepo(TestMocks.MockUserDB)
-	postRepo := inmemory.NewInMemoryPostRepo(TestMocks.MockPostDB)
-	createQuotePostUseCase := NewCreateQuotePostUseCase(mockUserRepo, postRepo)
-	useCaseInput := CreateQuotePostUseCaseInput{
+	mockUserRepo := repo_inmemory.NewInMemoryUserRepo(TestMocks.MockUserDB)
+	postRepo := repo_inmemory.NewInMemoryPostRepo(TestMocks.MockPostDB)
+	createQuotePostUseCase := post_usecase.NewCreateQuotePostUseCase(mockUserRepo, postRepo)
+	useCaseInput := post_usecase.CreateQuotePostUseCaseInput{
 		UserID: TestMocks.MockUserSeed[0].ID,
 		PostID: uuid.New().String(),
 		Quote:  "not found user",
@@ -48,7 +49,7 @@ func TestCreateQuotePostUseCase_WithNotFoundPost_ReturnsError(t *testing.T) {
 
 	output, err := createQuotePostUseCase.Execute(useCaseInput)
 
-	if !reflect.DeepEqual(output, CreateQuotePostUseCaseOutput{}) {
+	if !reflect.DeepEqual(output, post_usecase.CreateQuotePostUseCaseOutput{}) {
 		t.Errorf("should report user not found, got: %v", output)
 	}
 
@@ -62,14 +63,14 @@ func TestCreateQuotePostUseCase_WithNotFoundPost_ReturnsError(t *testing.T) {
 }
 func TestCreateQuotePostUseCase_WithValidInput_ReturnsPostID(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
-	mockUserRepo := inmemory.NewInMemoryUserRepo(TestMocks.MockUserDB)
-	mockQuoteUser := domain.NewUser("quote_user")
+	mockUserRepo := repo_inmemory.NewInMemoryUserRepo(TestMocks.MockUserDB)
+	mockQuoteUser := user.NewUser("quote_user")
 	TestMocks.MockUserDB.Insert(mockQuoteUser)
 
-	postRepo := inmemory.NewInMemoryPostRepo(TestMocks.MockPostDB)
-	createQuotePostUseCase := NewCreateQuotePostUseCase(mockUserRepo, postRepo)
+	postRepo := repo_inmemory.NewInMemoryPostRepo(TestMocks.MockPostDB)
+	createQuotePostUseCase := post_usecase.NewCreateQuotePostUseCase(mockUserRepo, postRepo)
 	mockOriginalPost := TestMocks.MockPostsSeed[0]
-	useCaseInput := CreateQuotePostUseCaseInput{
+	useCaseInput := post_usecase.CreateQuotePostUseCaseInput{
 		UserID: mockQuoteUser.ID,
 		PostID: mockOriginalPost.ID,
 		Quote:  "New quote!",
@@ -77,7 +78,7 @@ func TestCreateQuotePostUseCase_WithValidInput_ReturnsPostID(t *testing.T) {
 
 	output, err := createQuotePostUseCase.Execute(useCaseInput)
 
-	if reflect.DeepEqual(output, CreatePostOutput{}) {
+	if reflect.DeepEqual(output, post_usecase.CreatePostOutput{}) {
 		t.Errorf("should return PostID, got: %v", output)
 	}
 

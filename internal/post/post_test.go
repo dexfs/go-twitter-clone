@@ -1,6 +1,8 @@
-package domain
+package post_test
 
 import (
+	"github.com/dexfs/go-twitter-clone/internal/post"
+	"github.com/dexfs/go-twitter-clone/internal/user"
 	"github.com/google/uuid"
 	"testing"
 	"time"
@@ -8,9 +10,9 @@ import (
 
 // Post
 func TestNewPost_WithValidInput_ReturnsOK(t *testing.T) {
-	user := NewUser("user post 1")
-	mockInput := NewPostInput{User: user, Content: "mock_content"}
-	newPost, _ := NewPost(mockInput)
+	user := user.NewUser("user post 1")
+	mockInput := post.NewPostInput{User: user, Content: "mock_content"}
+	newPost, _ := post.NewPost(mockInput)
 
 	if newPost == nil {
 		t.Errorf("Invalid instance of Post")
@@ -32,18 +34,18 @@ func TestNewPost_WithValidInput_ReturnsOK(t *testing.T) {
 	}
 }
 func TestNewPost_WithEmptyInput_ReturnsError(t *testing.T) {
-	mockInput := NewPostInput{}
-	_, err := NewPost(mockInput)
+	mockInput := post.NewPostInput{}
+	_, err := post.NewPost(mockInput)
 
 	if err == nil {
 		t.Errorf("Invalid instance of Post")
 	}
 }
 func TestNewPost_WithNilUser_ReturnsError(t *testing.T) {
-	mockInput := NewPostInput{
+	mockInput := post.NewPostInput{
 		User: nil,
 	}
-	_, err := NewPost(mockInput)
+	_, err := post.NewPost(mockInput)
 
 	if err == nil {
 		t.Errorf("Invalid instance of Post")
@@ -55,11 +57,11 @@ func TestNewPost_WithNilUser_ReturnsError(t *testing.T) {
 
 }
 func TestNewPost_WithEmptyPostContent_ReturnsError(t *testing.T) {
-	mockUser := NewUser("test_user")
-	mockInput := NewPostInput{
+	mockUser := user.NewUser("test_user")
+	mockInput := post.NewPostInput{
 		User: mockUser,
 	}
-	_, err := NewPost(mockInput)
+	_, err := post.NewPost(mockInput)
 
 	if err == nil {
 		t.Errorf("Invalid instance of Post")
@@ -72,19 +74,19 @@ func TestNewPost_WithEmptyPostContent_ReturnsError(t *testing.T) {
 
 // Repost
 func TestNewRepost_WithValidInput_ReturnsOK(t *testing.T) {
-	mockUser := NewUser("post_original_user")
-	mockUserRepost := NewUser("post_repost_user")
-	mockPostInput := NewPostInput{
+	mockUser := user.NewUser("post_original_user")
+	mockUserRepost := user.NewUser("post_repost_user")
+	mockPostInput := post.NewPostInput{
 		User:    mockUser,
 		Content: "post_original_content",
 	}
-	mockOriginalPost, _ := NewPost(mockPostInput)
-	mockInput := NewRepostQuoteInput{
+	mockOriginalPost, _ := post.NewPost(mockPostInput)
+	mockInput := post.NewRepostQuoteInput{
 		User: mockUserRepost,
 		Post: mockOriginalPost,
 	}
 
-	newRepost, err := NewRepost(mockInput)
+	newRepost, err := post.NewRepost(mockInput)
 
 	if err != nil {
 		t.Errorf("Unexpected error. %v", err)
@@ -103,12 +105,12 @@ func TestNewRepost_WithValidInput_ReturnsOK(t *testing.T) {
 func TestNewRepost_WithRepostPost_ReturnsError(t *testing.T) {
 	mockOriginalPost := GenerateOriginalPost()
 	mockRepost := GenerateRepost(mockOriginalPost)
-	newRepostInput := NewRepostQuoteInput{
+	newRepostInput := post.NewRepostQuoteInput{
 		User:    mockRepost.User,
 		Post:    mockRepost,
 		Content: "repost in test",
 	}
-	_, err := NewRepost(newRepostInput)
+	_, err := post.NewRepost(newRepostInput)
 
 	if err == nil {
 		t.Errorf("NewRepost should have returned an error")
@@ -122,12 +124,12 @@ func TestNewRepost_WithRepostPost_ReturnsError(t *testing.T) {
 }
 func TestNewRepost_WithSameUserID_ReturnsError(t *testing.T) {
 	mockOriginalPost := GenerateOriginalPost()
-	newRepostInput := NewRepostQuoteInput{
+	newRepostInput := post.NewRepostQuoteInput{
 		User:    mockOriginalPost.User,
 		Post:    mockOriginalPost,
 		Content: "repost with the same user",
 	}
-	_, err := NewRepost(newRepostInput)
+	_, err := post.NewRepost(newRepostInput)
 
 	if err == nil {
 		t.Errorf("NewRepost should have returned an error")
@@ -143,21 +145,21 @@ func TestNewRepost_WithEmptyPostContent_ReturnsError(t *testing.T) {}
 
 // Quotepost
 func TestNewQuotepost_WithValidInput_ReturnsOK(t *testing.T) {
-	mockePostUser := NewUser("post_original_user")
-	mockQuotePostUser := NewUser("post_user_user")
-	mockPostInput := NewPostInput{
+	mockePostUser := user.NewUser("post_original_user")
+	mockQuotePostUser := user.NewUser("post_user_user")
+	mockPostInput := post.NewPostInput{
 		User:    mockePostUser,
 		Content: "post_original_content",
 	}
-	mockOriginalPost, _ := NewPost(mockPostInput)
+	mockOriginalPost, _ := post.NewPost(mockPostInput)
 
-	mockInput := NewRepostQuoteInput{
+	mockInput := post.NewRepostQuoteInput{
 		User:    mockQuotePostUser,
 		Post:    mockOriginalPost,
 		Content: "post_quote_content",
 	}
 
-	newQuotePost, err := NewQuote(mockInput)
+	newQuotePost, err := post.NewQuote(mockInput)
 
 	if err != nil {
 		t.Errorf("Unexpected error. %v", err)
@@ -193,13 +195,13 @@ func TestNewQuotepost_WithValidInput_ReturnsOK(t *testing.T) {
 }
 func TestNewQuotepost_WithSameUserID_ReturnsError(t *testing.T) {
 	originalPost := GenerateOriginalPost()
-	mockInput := NewRepostQuoteInput{
+	mockInput := post.NewRepostQuoteInput{
 		User:    originalPost.User,
 		Post:    originalPost,
 		Content: "repost in test",
 	}
 
-	_, err := NewQuote(mockInput)
+	_, err := post.NewQuote(mockInput)
 
 	if err == nil {
 		t.Errorf("Invalid instance of QuotePost returned")
@@ -212,13 +214,13 @@ func TestNewQuotepost_WithSameUserID_ReturnsError(t *testing.T) {
 func TestNewQuotepost_WithQuotepost_ReturnsError(t *testing.T) {
 	originalPost := GenerateOriginalPost()
 	quotePost := GenerateQuotepost(originalPost)
-	mockInput := NewRepostQuoteInput{
+	mockInput := post.NewRepostQuoteInput{
 		User:    originalPost.User,
 		Post:    quotePost,
 		Content: "repost in test",
 	}
 
-	_, err := NewQuote(mockInput)
+	_, err := post.NewQuote(mockInput)
 
 	if err == nil {
 		t.Errorf("Invalid instance of QuotePost returned")
@@ -230,12 +232,12 @@ func TestNewQuotepost_WithQuotepost_ReturnsError(t *testing.T) {
 }
 func TestNewQuotepost_WithEmptyPostContent_ReturnsError(t *testing.T) {
 	originalPost := GenerateOriginalPost()
-	mockInput := NewRepostQuoteInput{
+	mockInput := post.NewRepostQuoteInput{
 		User: originalPost.User,
 		Post: originalPost,
 	}
 
-	_, err := NewQuote(mockInput)
+	_, err := post.NewQuote(mockInput)
 
 	if err == nil {
 		t.Errorf("Invalid instance of QuotePost returned")
@@ -246,9 +248,9 @@ func TestNewQuotepost_WithEmptyPostContent_ReturnsError(t *testing.T) {
 	}
 }
 func TestNewQuotepost_WithNilPost_ReturnsError(t *testing.T) {
-	mockInput := NewRepostQuoteInput{}
+	mockInput := post.NewRepostQuoteInput{}
 
-	_, err := NewQuote(mockInput)
+	_, err := post.NewQuote(mockInput)
 
 	if err == nil {
 		t.Errorf("Invalid instance of QuotePost returned")
@@ -260,11 +262,11 @@ func TestNewQuotepost_WithNilPost_ReturnsError(t *testing.T) {
 }
 func TestNewQuotepost_WithNilUser_ReturnsError(t *testing.T) {
 	mockOriginalPost := GenerateOriginalPost()
-	mockInput := NewRepostQuoteInput{
+	mockInput := post.NewRepostQuoteInput{
 		Post: mockOriginalPost,
 	}
 
-	_, err := NewQuote(mockInput)
+	_, err := post.NewQuote(mockInput)
 
 	if err == nil {
 		t.Errorf("Invalid instance of QuotePost returned")
@@ -276,17 +278,17 @@ func TestNewQuotepost_WithNilUser_ReturnsError(t *testing.T) {
 }
 
 // in memory seeders
-func GenerateOriginalPost() *Post {
-	mockePostUser := NewUser("post_original_user")
-	mockPostInput := NewPostInput{
+func GenerateOriginalPost() *post.Post {
+	mockePostUser := user.NewUser("post_original_user")
+	mockPostInput := post.NewPostInput{
 		User:    mockePostUser,
 		Content: "post_original_content",
 	}
-	newPost, _ := NewPost(mockPostInput)
+	newPost, _ := post.NewPost(mockPostInput)
 	return newPost
 }
-func GenerateRepost(anOriginalPost *Post) *Post {
-	return &Post{
+func GenerateRepost(anOriginalPost *post.Post) *post.Post {
+	return &post.Post{
 		ID:                     uuid.NewString(),
 		User:                   anOriginalPost.User,
 		Content:                anOriginalPost.Content,
@@ -299,8 +301,8 @@ func GenerateRepost(anOriginalPost *Post) *Post {
 		OriginalPostScreenName: anOriginalPost.User.Username,
 	}
 }
-func GenerateQuotepost(anOriginalPost *Post) *Post {
-	return &Post{
+func GenerateQuotepost(anOriginalPost *post.Post) *post.Post {
+	return &post.Post{
 		ID:                     uuid.NewString(),
 		User:                   anOriginalPost.User,
 		Content:                anOriginalPost.Content,

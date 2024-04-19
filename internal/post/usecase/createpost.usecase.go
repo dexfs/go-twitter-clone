@@ -1,17 +1,17 @@
-package app
+package post_usecase
 
 import (
 	"errors"
-	"github.com/dexfs/go-twitter-clone/internal/domain"
-	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
+	"github.com/dexfs/go-twitter-clone/internal/post"
+	"github.com/dexfs/go-twitter-clone/internal/user"
 )
 
 type CreatePostUseCase struct {
-	userRepo interfaces.UserRepository
-	postRepo interfaces.PostRepository
+	userRepo user.UserRepository
+	postRepo post.PostRepository
 }
 
-func NewCreatePostUseCase(userRepo interfaces.UserRepository, postRepo interfaces.PostRepository) *CreatePostUseCase {
+func NewCreatePostUseCase(userRepo user.UserRepository, postRepo post.PostRepository) *CreatePostUseCase {
 	return &CreatePostUseCase{
 		userRepo: userRepo,
 		postRepo: postRepo,
@@ -31,7 +31,7 @@ func (uc *CreatePostUseCase) Execute(input CreatePostInput) (CreatePostOutput, e
 	// verifica se já atingiu o limite de postagens do dia retornar um erro
 	hasReachedLimit := uc.postRepo.HasReachedPostingLimitDay(input.UserID, 5)
 	if hasReachedLimit {
-		return CreatePostOutput{}, errors.New("you reached your posts day limit")
+		return CreatePostOutput{}, errors.New("you reached your post day limit")
 	}
 
 	// verifica se o usuário existe
@@ -40,12 +40,12 @@ func (uc *CreatePostUseCase) Execute(input CreatePostInput) (CreatePostOutput, e
 	if err != nil {
 		return CreatePostOutput{}, err
 	}
-	newPostInput := domain.NewPostInput{
+	newPostInput := post.NewPostInput{
 		User:    user,
 		Content: input.Content,
 	}
 
-	newPost, err := domain.NewPost(newPostInput)
+	newPost, err := post.NewPost(newPostInput)
 
 	if err != nil {
 		return CreatePostOutput{}, err

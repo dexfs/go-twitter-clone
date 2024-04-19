@@ -1,8 +1,8 @@
-package app
+package post_usecase
 
 import (
-	"github.com/dexfs/go-twitter-clone/internal/domain"
-	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
+	post_domain "github.com/dexfs/go-twitter-clone/internal/post"
+	"github.com/dexfs/go-twitter-clone/internal/user"
 )
 
 type CreateQuotePostUseCaseInput struct {
@@ -16,11 +16,11 @@ type CreateQuotePostUseCaseOutput struct {
 }
 
 type CreateQuotePostUseCase struct {
-	userRepo interfaces.UserRepository
-	postRepo interfaces.PostRepository
+	userRepo user.UserRepository
+	postRepo post_domain.PostRepository
 }
 
-func NewCreateQuotePostUseCase(userRepo interfaces.UserRepository, postRepo interfaces.PostRepository) *CreateQuotePostUseCase {
+func NewCreateQuotePostUseCase(userRepo user.UserRepository, postRepo post_domain.PostRepository) *CreateQuotePostUseCase {
 	return &CreateQuotePostUseCase{userRepo, postRepo}
 }
 
@@ -37,12 +37,12 @@ func (uc CreateQuotePostUseCase) Execute(input CreateQuotePostUseCaseInput) (Cre
 		return CreateQuotePostUseCaseOutput{}, err
 	}
 
-	newQuotePostInput := domain.NewRepostQuoteInput{
+	newQuotePostInput := post_domain.NewRepostQuoteInput{
 		User:    user,
 		Post:    post,
 		Content: input.Quote,
 	}
-	newQuotePost, err := domain.NewQuote(newQuotePostInput)
+	newQuotePost, err := post_domain.NewQuote(newQuotePostInput)
 
 	if err != nil {
 		return CreateQuotePostUseCaseOutput{}, err
