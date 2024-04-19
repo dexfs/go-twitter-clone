@@ -1,4 +1,4 @@
-package inmemory
+package in_memory
 
 import (
 	"github.com/dexfs/go-twitter-clone/internal/domain"

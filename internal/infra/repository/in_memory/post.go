@@ -1,9 +1,8 @@
-package inmemory
+package in_memory
 
 import (
 	"errors"
 	"github.com/dexfs/go-twitter-clone/internal/domain"
-	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
 	"github.com/dexfs/go-twitter-clone/pkg/database"
 	"github.com/dexfs/go-twitter-clone/pkg/shared/helpers"
 )
@@ -18,8 +17,8 @@ func NewInMemoryPostRepo(db *database.InMemoryDB[domain.Post]) *InMemoryPostRepo
 	}
 }
 
-func (r *InMemoryPostRepo) CountByUser(userId string) interfaces.Count {
-	count := interfaces.Count(0)
+func (r *InMemoryPostRepo) CountByUser(userId string) domain.Count {
+	count := domain.Count(0)
 	for _, currentData := range r.db.GetAll() {
 		if currentData.User.ID == userId {
 			count++
@@ -29,7 +28,7 @@ func (r *InMemoryPostRepo) CountByUser(userId string) interfaces.Count {
 	return count
 }
 
-func (r *InMemoryPostRepo) HasPostBeenRepostedByUser(postID string, userID string) interfaces.HasRepost {
+func (r *InMemoryPostRepo) HasPostBeenRepostedByUser(postID string, userID string) domain.HasRepost {
 	for _, vPost := range r.db.GetAll() {
 		if vPost.IsRepost {
 			if vPost.User.ID == userID && vPost.OriginalPostID == postID {
@@ -58,11 +57,11 @@ func (r *InMemoryPostRepo) Remove(item *domain.Post) {
 	r.db.Remove(item)
 }
 
-func (r *InMemoryPostRepo) GetAll() interfaces.Posts {
+func (r *InMemoryPostRepo) GetAll() domain.Posts {
 	return r.db.GetAll()
 }
 
-func (r *InMemoryPostRepo) HasReachedPostingLimitDay(userId string, limit uint64) interfaces.PostingLimitReached {
+func (r *InMemoryPostRepo) HasReachedPostingLimitDay(userId string, limit uint64) domain.PostingLimitReached {
 	var count = uint64(0)
 
 	for _, currentData := range r.db.GetAll() {
@@ -81,7 +80,7 @@ func (r *InMemoryPostRepo) HasReachedPostingLimitDay(userId string, limit uint64
 	}
 }
 
-func (r *InMemoryPostRepo) GetFeedByUserID(userID string) interfaces.Posts {
+func (r *InMemoryPostRepo) GetFeedByUserID(userID string) domain.Posts {
 	var feed []*domain.Post
 	for _, currentData := range r.db.GetAll() {
 		if currentData.User.ID == userID {

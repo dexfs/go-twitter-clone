@@ -1,4 +1,4 @@
-package inmemory
+package in_memory
 
 import (
 	"errors"

@@ -1,8 +1,7 @@
-package inmemory
+package in_memory
 
 import (
 	"github.com/dexfs/go-twitter-clone/internal/domain"
-	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
 	"github.com/dexfs/go-twitter-clone/pkg/database"
 	"math/rand"
 	"testing"
@@ -118,7 +117,7 @@ func TestShoulCountPostsPerUser(t *testing.T) {
 	countPosts := postRepo.CountByUser(userTest.ID)
 
 	// Then
-	expected := interfaces.Count(2)
+	expected := domain.Count(2)
 	if countPosts != expected {
 		t.Errorf("got %v want %v", countPosts, expected)
 	}
