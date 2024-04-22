@@ -1,6 +1,9 @@
 package input
 
-import "github.com/dexfs/go-twitter-clone/core/domain"
+import (
+	"github.com/dexfs/go-twitter-clone/adapter/input/model/rest_errors"
+	"github.com/dexfs/go-twitter-clone/core/domain"
+)
 
 type CreatePostUseCaseInput struct {
 	UserID  string
@@ -8,5 +11,5 @@ type CreatePostUseCaseInput struct {
 }
 
 type CreatePostUseCase interface {
-	Execute(aInput CreatePostUseCaseInput) (*domain.Post, error)
+	Execute(aInput CreatePostUseCaseInput) (*domain.Post, *rest_errors.RestError)
 }

@@ -5,6 +5,6 @@ import (
 	"github.com/dexfs/go-twitter-clone/core/domain"
 )
 
-type GetUserInfoUseCase interface {
-	Execute(username string) (*domain.User, *rest_errors.RestError)
+type GetUserFeedUseCase interface {
+	Execute(username string) ([]*domain.Post, *rest_errors.RestError)
 }

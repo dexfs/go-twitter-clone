@@ -2,23 +2,16 @@ package inmemory
 
 import (
 	"errors"
+	inmemory_schema "github.com/dexfs/go-twitter-clone/adapter/output/repository/inmemory/schema"
 	"github.com/dexfs/go-twitter-clone/core/domain"
 	"github.com/dexfs/go-twitter-clone/pkg/database"
-	"time"
 )
 
-type UserSchema struct {
-	ID        string
-	Username  string
-	CreatedAt time.Time
-	UpdatedAt time.Time
-}
-
 type inMemoryUserRepository struct {
-	db *database.InMemoryDB[UserSchema]
+	db *database.InMemoryDB[inmemory_schema.UserSchema]
 }
 
-func NewInMemoryUserRepository(db *database.InMemoryDB[UserSchema]) *inMemoryUserRepository {
+func NewInMemoryUserRepository(db *database.InMemoryDB[inmemory_schema.UserSchema]) *inMemoryUserRepository {
 	return &inMemoryUserRepository{
 		db: db,
 	}

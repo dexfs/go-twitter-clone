@@ -1,39 +1,27 @@
 package inmemory
 
 import (
+	"github.com/dexfs/go-twitter-clone/adapter/output/mappers"
+	inmemory_schema "github.com/dexfs/go-twitter-clone/adapter/output/repository/inmemory/schema"
 	"github.com/dexfs/go-twitter-clone/core/domain"
 	"github.com/dexfs/go-twitter-clone/pkg/database"
 	"github.com/dexfs/go-twitter-clone/pkg/shared/helpers"
-	"time"
 )
 
-type PostSchema struct {
-	ID                     string
-	UserId                 string
-	Content                string
-	CreatedAt              time.Time
-	IsQuote                bool
-	IsRepost               bool
-	OriginalPostID         string
-	OriginalPostContent    string
-	OriginalPostUserID     string
-	OriginalPostScreenName string
-}
-
 type inMemoryPostRepository struct {
-	db *database.InMemoryDB[PostSchema]
+	db *database.InMemoryDB[inmemory_schema.PostSchema]
 }
 
-func NewInMemoryPostRepository(db *database.InMemoryDB[PostSchema]) *inMemoryPostRepository {
+func NewInMemoryPostRepository(db *database.InMemoryDB[inmemory_schema.PostSchema]) *inMemoryPostRepository {
 	return &inMemoryPostRepository{
 		db,
 	}
 }
 
 func (r *inMemoryPostRepository) CreatePost(aPost *domain.Post) error {
-	r.db.Insert(&PostSchema{
+	r.db.Insert(&inmemory_schema.PostSchema{
 		ID:                     aPost.ID,
-		UserId:                 aPost.UserID,
+		UserID:                 aPost.UserID,
 		Content:                aPost.Content,
 		CreatedAt:              aPost.CreatedAt,
 		IsQuote:                aPost.IsQuote,
@@ -50,7 +38,7 @@ func (r *inMemoryPostRepository) HasReachedPostingLimitDay(aUserId string, aLimi
 	var count = uint64(0)
 
 	for _, currentData := range r.db.GetAll() {
-		matched := currentData.UserId == aUserId && helpers.IsToday(currentData.CreatedAt)
+		matched := currentData.UserID == aUserId && helpers.IsToday(currentData.CreatedAt)
 
 		if matched {
 			count++
@@ -63,4 +51,15 @@ func (r *inMemoryPostRepository) HasReachedPostingLimitDay(aUserId string, aLimi
 	} else {
 		return false
 	}
+}
+
+func (r *inMemoryPostRepository) AllByUserID(aUserId string) []*domain.Post {
+	var feed []*domain.Post
+	for _, currentData := range r.db.GetAll() {
+		if currentData.UserID == aUserId {
+			feed = append(feed, mappers.NewPostMapper().FromPersistence(currentData))
+		}
+	}
+
+	return feed
 }
