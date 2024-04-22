@@ -12,23 +12,61 @@ import (
 
 var (
 	userRepo output.UserPort
+	postRepo output.PostPort
 )
 
-func InitRoutes(r *gin.Engine) {
-	initAdapters()
+type AppServer struct {
+	router *gin.Engine
+	addr   string
+}
+
+func NewRouter(addr string) *AppServer {
+	gin.SetMode(gin.DebugMode)
+	gin.ForceConsoleColor()
+	return &AppServer{
+		router: gin.Default(),
+		addr:   addr,
+	}
+}
+
+func (s *AppServer) Run() error {
+	s.router.SetTrustedProxies(nil)
+	s.initAdapters()
+	s.initUserRoutes()
+	s.initPostRoutes()
+	return s.router.Run(s.addr)
+}
+
+func (s *AppServer) initPostRoutes() {
+	createPostUseCase, _ := usecase.NewCreatePostUseCase(postRepo, userRepo)
+	postsController := http.NewPostsController(createPostUseCase)
+
+	s.router.POST("/posts", postsController.CreatePost)
+}
+
+func (s *AppServer) initUserRoutes() {
 	getUserInfoService, _ := usecase.NewGetUserInfoUseCase(userRepo)
 	usersController := http.NewUsersController(getUserInfoService)
 
-	r.GET("/users/:username/info", usersController.GetInfo)
+	s.router.GET("/users/:username/info", usersController.GetInfo)
 }
 
-func initAdapters() {
+func (s *AppServer) initAdapters() {
 	userDb := &database.InMemoryDB[inmemory.UserSchema]{}
 	userDb.Insert(&inmemory.UserSchema{
-		ID:        "userid",
-		Username:  "seeduser",
+		ID:        "4cfe67a9-defc-42b9-8410-cb5086bec2f5",
+		Username:  "alucard",
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	})
+	userDb.Insert(&inmemory.UserSchema{
+		ID:        "b8903f77-5d16-4176-890f-f597594ff952",
+		Username:  "alexander",
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	})
 	userRepo = inmemory.NewInMemoryUserRepository(userDb)
+
+	postDB := &database.InMemoryDB[inmemory.PostSchema]{}
+	postRepo = inmemory.NewInMemoryPostRepository(postDB)
 }
