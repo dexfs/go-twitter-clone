@@ -16,7 +16,7 @@ var (
 
 func InitRoutes(r *gin.Engine) {
 	initAdapters()
-	getUserInfoService := usecase.NewGetUserInfoService(userRepo)
+	getUserInfoService, _ := usecase.NewGetUserInfoUseCase(userRepo)
 	usersController := http.NewUsersController(getUserInfoService)
 
 	r.GET("/users/:username/info", usersController.GetInfo)

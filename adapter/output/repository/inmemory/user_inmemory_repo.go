@@ -38,3 +38,17 @@ func (r *inMemoryUserRepository) ByUsername(username string) (*domain.User, erro
 
 	return nil, errors.New("user not found")
 }
+
+func (r *inMemoryUserRepository) FindByID(id string) (*domain.User, error) {
+	for _, currentUser := range r.db.GetAll() {
+		if currentUser.ID == id {
+			return &domain.User{
+				ID:        currentUser.ID,
+				Username:  currentUser.Username,
+				CreatedAt: currentUser.CreatedAt,
+				UpdatedAt: currentUser.UpdatedAt,
+			}, nil
+		}
+	}
+	return nil, errors.New("user not found")
+}
