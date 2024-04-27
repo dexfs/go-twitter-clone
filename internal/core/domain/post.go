@@ -8,7 +8,7 @@ import (
 
 type Post struct {
 	ID                     string
-	UserID                 string
+	User                   *User
 	Content                string
 	CreatedAt              time.Time
 	IsQuote                bool
@@ -41,7 +41,7 @@ func NewPost(aNewPost NewPostInput) (*Post, error) {
 
 	return &Post{
 		ID:                     uuid.NewString(),
-		UserID:                 aNewPost.User.ID,
+		User:                   aNewPost.User,
 		Content:                aNewPost.Content,
 		CreatedAt:              time.Now(),
 		IsQuote:                false,
@@ -58,20 +58,20 @@ func NewRepost(aRepostInput NewRepostQuoteInput) (*Post, error) {
 		return nil, errors.New("it is not possible repost a repost post")
 	}
 
-	if aRepostInput.Post.UserID == aRepostInput.User.ID {
+	if aRepostInput.Post.User.ID == aRepostInput.User.ID {
 		return nil, errors.New("it is not possible repost your own post")
 	}
 
 	return &Post{
 		ID:                     uuid.NewString(),
-		UserID:                 aRepostInput.User.ID,
+		User:                   aRepostInput.User,
 		CreatedAt:              time.Now(),
 		IsQuote:                false,
 		IsRepost:               true,
 		OriginalPostID:         aRepostInput.Post.ID,
 		OriginalPostContent:    aRepostInput.Post.Content,
-		OriginalPostUserID:     aRepostInput.User.ID,
-		OriginalPostScreenName: aRepostInput.User.Username,
+		OriginalPostUserID:     aRepostInput.Post.User.ID,
+		OriginalPostScreenName: aRepostInput.Post.User.Username,
 	}, nil
 }
 
@@ -92,20 +92,20 @@ func NewQuote(aNewQuoteInput NewRepostQuoteInput) (*Post, error) {
 		return nil, errors.New("it is not possible a quote post of a quote post")
 	}
 
-	if aNewQuoteInput.Post.UserID == aNewQuoteInput.User.ID {
+	if aNewQuoteInput.Post.User.ID == aNewQuoteInput.User.ID {
 		return nil, errors.New("it is not possible quote your own post")
 	}
 
 	return &Post{
 		ID:                     uuid.NewString(),
-		UserID:                 aNewQuoteInput.User.ID,
+		User:                   aNewQuoteInput.User,
 		Content:                aNewQuoteInput.Content,
 		CreatedAt:              time.Now(),
 		IsQuote:                true,
 		IsRepost:               false,
 		OriginalPostID:         aNewQuoteInput.Post.ID,
 		OriginalPostContent:    aNewQuoteInput.Post.Content,
-		OriginalPostUserID:     aNewQuoteInput.Post.UserID,
-		OriginalPostScreenName: aNewQuoteInput.User.Username,
+		OriginalPostUserID:     aNewQuoteInput.Post.User.ID,
+		OriginalPostScreenName: aNewQuoteInput.Post.User.Username,
 	}, nil
 }

@@ -1,24 +1,24 @@
 package usecase_test
 
 import (
+	"github.com/dexfs/go-twitter-clone/adapter/output/repository/inmemory"
 	inmemory_schema "github.com/dexfs/go-twitter-clone/adapter/output/repository/inmemory/schema"
-	"github.com/dexfs/go-twitter-clone/core/usecase"
-	"github.com/dexfs/go-twitter-clone/pkg/database"
+	"github.com/dexfs/go-twitter-clone/internal/core/usecase"
 	"github.com/dexfs/go-twitter-clone/tests/mocks"
 	"testing"
 )
 
 func TestExecute_WithValidUsername_ReturnsFeedItems(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
-	mockUser := mocks.UserSeed(TestMocks.MockUserDB, 1)
-	mocks.PostSeed(TestMocks.MockPostDB, mockUser[0], 2)
-	mockUserRepo := mocks.MakeInMemoryUserRepo(TestMocks.MockUserDB)
+	mockUserSeed, _ := mocks.UserSeed(1)
+	mocks.PostSeed(mockUserSeed[0], 2)
+	mockUserRepo := mocks.MakeInMemoryUserRepo(TestMocks.MockDB)
 
-	postRepo := mocks.MakeInMemoryPostRepo(TestMocks.MockPostDB)
+	postRepo := mocks.MakeInMemoryPostRepo(TestMocks.MockDB)
 
 	userFeedUseCase, _ := usecase.NewGetUserFeedUseCase(mockUserRepo, postRepo)
 
-	userFeed, err := userFeedUseCase.Execute(mockUser[0].Username)
+	userFeed, err := userFeedUseCase.Execute(mockUserSeed[0].Username)
 
 	if err != nil {
 		t.Errorf("want err=nil; got %v", err)
@@ -31,10 +31,10 @@ func TestExecute_WithValidUsername_ReturnsFeedItems(t *testing.T) {
 
 func TestExecute_WithEmptyUsername_ReturnsError(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
-	mockUser := mocks.UserSeed(TestMocks.MockUserDB, 1)
-	mocks.PostSeed(TestMocks.MockPostDB, mockUser[0], 2)
-	mockUserRepo := mocks.MakeInMemoryUserRepo(TestMocks.MockUserDB)
-	postRepo := mocks.MakeInMemoryPostRepo(TestMocks.MockPostDB)
+	userSeed, _ := mocks.UserSeed(1)
+	mocks.PostSeed(userSeed[0], 2)
+	mockUserRepo := mocks.MakeInMemoryUserRepo(TestMocks.MockDB)
+	postRepo := mocks.MakeInMemoryPostRepo(TestMocks.MockDB)
 	getUserFeedUseCase, _ := usecase.NewGetUserFeedUseCase(mockUserRepo, postRepo)
 	_, err := getUserFeedUseCase.Execute("")
 
@@ -49,10 +49,10 @@ func TestExecute_WithEmptyUsername_ReturnsError(t *testing.T) {
 }
 func TestExecute_WithNonExistingUsername_ReturnsError(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
-	mockUser := mocks.UserSeed(TestMocks.MockUserDB, 1)
-	mocks.PostSeed(TestMocks.MockPostDB, mockUser[0], 2)
-	mockUserRepo := mocks.MakeInMemoryUserRepo(TestMocks.MockUserDB)
-	postRepo := mocks.MakeInMemoryPostRepo(TestMocks.MockPostDB)
+	mockeSeed, _ := mocks.UserSeed(1)
+	mocks.PostSeed(mockeSeed[0], 2)
+	mockUserRepo := mocks.MakeInMemoryUserRepo(TestMocks.MockDB)
+	postRepo := mocks.MakeInMemoryPostRepo(TestMocks.MockDB)
 	getUserFeedUseCase, _ := usecase.NewGetUserFeedUseCase(mockUserRepo, postRepo)
 	_, err := getUserFeedUseCase.Execute("non-existing-user")
 
@@ -66,7 +66,7 @@ func TestExecute_WithNonExistingUsername_ReturnsError(t *testing.T) {
 }
 func TestExecute_WithNilUserRepository_ReturnsError(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
-	postRepo := mocks.MakeInMemoryPostRepo(TestMocks.MockPostDB)
+	postRepo := mocks.MakeInMemoryPostRepo(TestMocks.MockDB)
 	getUserFeedUseCase, err := usecase.NewGetUserFeedUseCase(nil, postRepo)
 
 	if getUserFeedUseCase != nil {
@@ -83,7 +83,7 @@ func TestExecute_WithNilUserRepository_ReturnsError(t *testing.T) {
 }
 func TestExecute_WithNilPostRepository_ReturnsError(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
-	mockUserRepo := mocks.MakeInMemoryUserRepo(TestMocks.MockUserDB)
+	mockUserRepo := mocks.MakeInMemoryUserRepo(TestMocks.MockDB)
 	getUserFeedUseCase, err := usecase.NewGetUserFeedUseCase(mockUserRepo, nil)
 
 	if getUserFeedUseCase != nil {
@@ -100,10 +100,10 @@ func TestExecute_WithNilPostRepository_ReturnsError(t *testing.T) {
 }
 func TestExecute_WithPostRepositoryError_ReturnsError(t *testing.T) {
 	TestMocks := mocks.GetTestMocks()
-	mockUser := mocks.UserSeed(TestMocks.MockUserDB, 1)
-	mockUserRepo := mocks.MakeInMemoryUserRepo(TestMocks.MockUserDB)
-	mockPostDB := &database.InMemoryDB[inmemory_schema.PostSchema]{}
-	postRepo := mocks.MakeInMemoryPostRepo(mockPostDB)
+	_, mockUser := mocks.UserSeed(1)
+	mockUserRepo := mocks.MakeInMemoryUserRepo(TestMocks.MockDB)
+	TestMocks.MockDB.RegisterSchema(inmemory.POST_SCHEMA_NAME, []*inmemory_schema.PostSchema{})
+	postRepo := mocks.MakeInMemoryPostRepo(TestMocks.MockDB)
 
 	userFeedUseCase, _ := usecase.NewGetUserFeedUseCase(mockUserRepo, postRepo)
 

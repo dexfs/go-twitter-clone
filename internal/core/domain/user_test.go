@@ -1,7 +1,7 @@
 package domain_test
 
 import (
-	"github.com/dexfs/go-twitter-clone/core/domain"
+	"github.com/dexfs/go-twitter-clone/internal/core/domain"
 	"testing"
 	"time"
 )

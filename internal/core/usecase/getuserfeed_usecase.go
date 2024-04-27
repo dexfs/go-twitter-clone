@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"github.com/dexfs/go-twitter-clone/adapter/input/model/rest_errors"
-	"github.com/dexfs/go-twitter-clone/core/domain"
-	"github.com/dexfs/go-twitter-clone/core/port/output"
+	"github.com/dexfs/go-twitter-clone/internal/core/domain"
+	"github.com/dexfs/go-twitter-clone/internal/core/port/output"
 )
 
 type getUserFeedUseCase struct {
@@ -28,6 +28,6 @@ func (uc *getUserFeedUseCase) Execute(username string) ([]*domain.Post, *rest_er
 		return []*domain.Post{}, rest_errors.NewNotFoundError(err.Error())
 	}
 
-	posts := uc.postPort.AllByUserID(user.ID)
+	posts := uc.postPort.AllByUserID(user)
 	return posts, nil
 }

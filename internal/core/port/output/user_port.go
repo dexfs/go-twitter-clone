@@ -1,6 +1,6 @@
 package output
 
-import "github.com/dexfs/go-twitter-clone/core/domain"
+import "github.com/dexfs/go-twitter-clone/internal/core/domain"
 
 type UserPort interface {
 	ByUsername(username string) (*domain.User, error)
