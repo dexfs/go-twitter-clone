@@ -2,7 +2,7 @@ package mappers
 
 import (
 	inmemory_schema "github.com/dexfs/go-twitter-clone/adapter/output/repository/inmemory/schema"
-	"github.com/dexfs/go-twitter-clone/core/domain"
+	"github.com/dexfs/go-twitter-clone/internal/core/domain"
 )
 
 type postMapper struct{}
@@ -14,7 +14,7 @@ func NewPostMapper() *postMapper {
 func (m *postMapper) ToPersistence(aPost *domain.Post) *inmemory_schema.PostSchema {
 	return &inmemory_schema.PostSchema{
 		ID:                     aPost.ID,
-		UserID:                 aPost.UserID,
+		UserID:                 aPost.User.ID,
 		Content:                aPost.Content,
 		CreatedAt:              aPost.CreatedAt,
 		IsQuote:                aPost.IsQuote,
@@ -26,10 +26,10 @@ func (m *postMapper) ToPersistence(aPost *domain.Post) *inmemory_schema.PostSche
 	}
 }
 
-func (m *postMapper) FromPersistence(aPost *inmemory_schema.PostSchema) *domain.Post {
+func (m *postMapper) FromPersistence(aPost *inmemory_schema.PostSchema, aUser *domain.User) *domain.Post {
 	return &domain.Post{
 		ID:                     aPost.ID,
-		UserID:                 aPost.UserID,
+		User:                   aUser,
 		Content:                aPost.Content,
 		CreatedAt:              aPost.CreatedAt,
 		IsQuote:                aPost.IsQuote,
