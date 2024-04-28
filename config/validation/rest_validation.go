@@ -26,7 +26,7 @@ func init() {
 	}
 }
 
-func ValidationError(validation_err error) *rest_errors.RestError {
+func RestError(validation_err error) *rest_errors.RestError {
 	var jsonErr *json.UnmarshalTypeError
 	var jsonValidationError validator.ValidationErrors
 
