@@ -1,10 +1,13 @@
 package database
 
+import "fmt"
+
 type InMemoryDB struct {
 	Schemas map[string]interface{}
 }
 
 func NewInMemoryDB() *InMemoryDB {
+	fmt.Println("Creating InMemoryDB")
 	return &InMemoryDB{Schemas: make(map[string]interface{})}
 }
 
@@ -24,14 +27,3 @@ func (db *InMemoryDB) RegisterSchema(key string, value interface{}) {
 func (db *InMemoryDB) DropSchema(key string) {
 	delete(db.Schemas, key)
 }
-
-//func (db *InMemoryDB) Insert(key string, newItem interface{}) {
-//	existing, ok := db.Schemas[key].([]interface{})
-//	if !ok {
-//		log.Fatal("schema " + key + " not found")
-//		return
-//	}
-//
-//	updateSlice := append(existing, newItem.(*interface{}))
-//	db.Schemas[key] = updateSlice
-//}
