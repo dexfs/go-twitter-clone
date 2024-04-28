@@ -1,69 +1,115 @@
 package mocks
 
 import (
-	"github.com/dexfs/go-twitter-clone/internal/domain"
-	"github.com/dexfs/go-twitter-clone/internal/domain/interfaces"
-	"github.com/dexfs/go-twitter-clone/internal/infra/repository/inmemory"
+	"github.com/dexfs/go-twitter-clone/adapter/output/mappers"
+	"github.com/dexfs/go-twitter-clone/adapter/output/repository/inmemory"
+	inmemory_schema "github.com/dexfs/go-twitter-clone/adapter/output/repository/inmemory/schema"
+	"github.com/dexfs/go-twitter-clone/internal/core/domain"
+	"github.com/dexfs/go-twitter-clone/internal/core/port/output"
 	"github.com/dexfs/go-twitter-clone/pkg/database"
+	"log"
 	"strconv"
 )
 
 // mocks
-func MakeDb[T any]() *database.InMemoryDB[T] {
-	return &database.InMemoryDB[T]{}
+func MakeDb() *database.InMemoryDB {
+	db := database.NewInMemoryDB()
+	return db
 }
-func MakeInMemoryUserRepo(db *database.InMemoryDB[domain.User]) interfaces.UserRepository {
-	repo := inmemory.NewInMemoryUserRepo(db)
+func MakeInMemoryUserRepo(db *database.InMemoryDB) output.UserPort {
+	repo := inmemory.NewInMemoryUserRepository(db)
 	return repo
 }
-func MakeInMemoryPostRepo(db *database.InMemoryDB[domain.Post]) interfaces.PostRepository {
-	repo := inmemory.NewInMemoryPostRepo(db)
+func MakeInMemoryPostRepo(db *database.InMemoryDB) output.PostPort {
+	repo := inmemory.NewInMemoryPostRepository(db)
 	return repo
 }
-func UserSeed(db *database.InMemoryDB[domain.User], amount int) []*domain.User {
+
+func UserSeed(amount uint64) ([]*inmemory_schema.UserSchema, []*domain.User) {
 	if amount <= 0 {
 		amount = 1
 	}
+	seeds := make([]*inmemory_schema.UserSchema, amount)
 	users := make([]*domain.User, amount)
-	for i := 0; i < len(users); i++ {
+	for i := 0; i < len(seeds); i++ {
 		username := "user" + strconv.Itoa(i)
 		newUser := domain.NewUser(username)
-		db.Insert(newUser)
 		users[i] = newUser
+		seeds[i] = &inmemory_schema.UserSchema{
+			ID:        newUser.ID,
+			Username:  newUser.Username,
+			CreatedAt: newUser.CreatedAt,
+			UpdatedAt: newUser.UpdatedAt,
+		}
 	}
-	return users
+	return seeds, users
 }
-func PostSeed(db *database.InMemoryDB[domain.Post], user *domain.User, amount int) []*domain.Post {
+
+func PostSeed(user *inmemory_schema.UserSchema, amount int) ([]*inmemory_schema.PostSchema, []*domain.Post) {
+	seeds := make([]*inmemory_schema.PostSchema, amount)
 	posts := make([]*domain.Post, amount)
-	for i := 0; i < len(posts); i++ {
+	for i := 0; i < len(seeds); i++ {
 		newPostInput := domain.NewPostInput{
-			User:    user,
+			User:    mappers.NewUserMapper().FromPersistence(user),
 			Content: "post_" + strconv.Itoa(i),
 		}
 		newPost, _ := domain.NewPost(newPostInput)
-		db.Insert(newPost)
 		posts[i] = newPost
+		seeds[i] = &inmemory_schema.PostSchema{
+			ID:                     newPost.ID,
+			UserID:                 newPost.User.ID,
+			Content:                newPost.Content,
+			CreatedAt:              newPost.CreatedAt,
+			IsQuote:                newPost.IsQuote,
+			IsRepost:               newPost.IsRepost,
+			OriginalPostID:         newPost.OriginalPostID,
+			OriginalPostContent:    newPost.OriginalPostContent,
+			OriginalPostUserID:     newPost.OriginalPostUserID,
+			OriginalPostScreenName: newPost.OriginalPostScreenName,
+		}
 	}
-	return posts
+	return seeds, posts
 }
 
 type TestMocks struct {
-	MockUserDB    *database.InMemoryDB[domain.User]
+	MockDB        *database.InMemoryDB
 	MockUserSeed  []*domain.User
-	MockPostDB    *database.InMemoryDB[domain.Post]
 	MockPostsSeed []*domain.Post
 }
 
 func GetTestMocks() TestMocks {
-	mockUserDB := MakeDb[domain.User]()
-	mockPostDB := MakeDb[domain.Post]()
-	mockUserSeed := UserSeed(mockUserDB, 1)
-	mockPostsSeed := PostSeed(mockPostDB, mockUserSeed[0], 2)
+	mockDB := MakeDb()
+	userSeeds, mockUsers := UserSeed(1)
+	postSeeds, mockPosts := PostSeed(userSeeds[0], 2)
+
+	mockDB.RegisterSchema(inmemory.USER_SCHEMA_NAME, userSeeds)
+	mockDB.RegisterSchema(inmemory.POST_SCHEMA_NAME, postSeeds)
 
 	return TestMocks{
-		MockUserDB:    mockUserDB,
-		MockUserSeed:  mockUserSeed,
-		MockPostDB:    mockPostDB,
-		MockPostsSeed: mockPostsSeed,
+		MockDB:        mockDB,
+		MockUserSeed:  mockUsers,
+		MockPostsSeed: mockPosts,
 	}
+}
+
+func InsertUserHelper(db *database.InMemoryDB, newItem *inmemory_schema.UserSchema) {
+	existing, ok := db.Schemas[inmemory.USER_SCHEMA_NAME].([]*inmemory_schema.UserSchema)
+	if !ok {
+		log.Fatal("schema " + inmemory.USER_SCHEMA_NAME + " not found")
+		return
+	}
+
+	updateSlice := append(existing, newItem)
+	db.Schemas[inmemory.USER_SCHEMA_NAME] = updateSlice
+}
+
+func InsertPostHelper(db *database.InMemoryDB, newItem *inmemory_schema.PostSchema) {
+	existing, ok := db.Schemas[inmemory.POST_SCHEMA_NAME].([]*inmemory_schema.PostSchema)
+	if !ok {
+		log.Fatal("schema " + inmemory.POST_SCHEMA_NAME + " not found")
+		return
+	}
+
+	updateSlice := append(existing, newItem)
+	db.Schemas[inmemory.POST_SCHEMA_NAME] = updateSlice
 }
