@@ -1,6 +1,6 @@
 package response
 
-import "github.com/dexfs/go-twitter-clone/core/domain"
+import "github.com/dexfs/go-twitter-clone/internal/core/domain"
 
 type GetUserInfoResponse struct {
 	ID        string `json:"id"`

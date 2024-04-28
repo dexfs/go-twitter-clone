@@ -5,8 +5,8 @@ import (
 	"github.com/dexfs/go-twitter-clone/adapter/input/model/request"
 	"github.com/dexfs/go-twitter-clone/adapter/input/model/response"
 	"github.com/dexfs/go-twitter-clone/config/validation"
-	"github.com/dexfs/go-twitter-clone/core/domain"
-	"github.com/dexfs/go-twitter-clone/core/port/input"
+	"github.com/dexfs/go-twitter-clone/internal/core/domain"
+	"github.com/dexfs/go-twitter-clone/internal/core/port/input"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
