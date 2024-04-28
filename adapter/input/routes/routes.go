@@ -4,16 +4,11 @@ import (
 	"github.com/dexfs/go-twitter-clone/adapter/input/http"
 	"github.com/dexfs/go-twitter-clone/adapter/output/repository/inmemory"
 	inmemory_schema "github.com/dexfs/go-twitter-clone/adapter/output/repository/inmemory/schema"
-	"github.com/dexfs/go-twitter-clone/core/port/output"
-	"github.com/dexfs/go-twitter-clone/core/usecase"
+	"github.com/dexfs/go-twitter-clone/internal/core/usecase"
 	"github.com/dexfs/go-twitter-clone/pkg/database"
 	"github.com/gin-gonic/gin"
+	"log"
 	"time"
-)
-
-var (
-	userRepo output.UserPort
-	postRepo output.PostPort
 )
 
 type AppServer struct {
@@ -32,44 +27,55 @@ func NewRouter(addr string) *AppServer {
 
 func (s *AppServer) Run() error {
 	s.router.SetTrustedProxies(nil)
-	s.initAdapters()
-	s.initUserRoutes()
-	s.initPostRoutes()
+	db := s.initDatabase()
+	s.initRoutes(db)
 	return s.router.Run(s.addr)
 }
 
-func (s *AppServer) initPostRoutes() {
-	createPostUseCase, _ := usecase.NewCreatePostUseCase(postRepo, userRepo)
-	postsController := http.NewPostsController(createPostUseCase)
+func (s *AppServer) initRoutes(db *database.InMemoryDB) {
+	userRepo := inmemory.NewInMemoryUserRepository(db)
+	postRepo := inmemory.NewInMemoryPostRepository(db)
 
-	s.router.POST("/posts", postsController.CreatePost)
-}
-
-func (s *AppServer) initUserRoutes() {
 	getUserInfoService, _ := usecase.NewGetUserInfoUseCase(userRepo)
 	getUserFeedUseCase, _ := usecase.NewGetUserFeedUseCase(userRepo, postRepo)
-	usersController := http.NewUsersController(getUserInfoService, getUserFeedUseCase)
 
+	usersController := http.NewUsersController(getUserInfoService, getUserFeedUseCase)
+	//
 	s.router.GET("/users/:username/info", usersController.GetInfo)
 	s.router.GET("/users/:username/feed", usersController.GetFeed)
+	//
+	createPostUseCase, err := usecase.NewCreatePostUseCase(postRepo, userRepo)
+
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	postsController := http.NewPostsController(createPostUseCase)
+	s.router.POST("/posts", postsController.CreatePost)
+
 }
 
-func (s *AppServer) initAdapters() {
-	userDb := &database.InMemoryDB[inmemory_schema.UserSchema]{}
-	userDb.Insert(&inmemory_schema.UserSchema{
+func (s *AppServer) initDatabase() *database.InMemoryDB {
+	db := database.NewInMemoryDB()
+	if db == nil {
+		panic("failed to connect to database")
+	}
+	initialUsers := make([]*inmemory_schema.UserSchema, 0)
+	initialUsers = append(initialUsers, &inmemory_schema.UserSchema{
 		ID:        "4cfe67a9-defc-42b9-8410-cb5086bec2f5",
 		Username:  "alucard",
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	})
-	userDb.Insert(&inmemory_schema.UserSchema{
+	initialUsers = append(initialUsers, &inmemory_schema.UserSchema{
 		ID:        "b8903f77-5d16-4176-890f-f597594ff952",
 		Username:  "alexander",
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	})
-	userRepo = inmemory.NewInMemoryUserRepository(userDb)
 
-	postDB := &database.InMemoryDB[inmemory_schema.PostSchema]{}
-	postRepo = inmemory.NewInMemoryPostRepository(postDB)
+	db.RegisterSchema(inmemory.USER_SCHEMA_NAME, initialUsers)
+	db.RegisterSchema(inmemory.POST_SCHEMA_NAME, []*inmemory_schema.PostSchema{})
+	return db
 }
