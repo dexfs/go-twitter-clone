@@ -1,14 +1,15 @@
 package routes
 
 import (
-	"github.com/dexfs/go-twitter-clone/adapter/input/http"
+	"github.com/dexfs/go-twitter-clone/adapter/input/adapter_http"
+	"github.com/dexfs/go-twitter-clone/internal/core/usecase"
+	"github.com/fvbock/endless"
+	"time"
+
 	"github.com/dexfs/go-twitter-clone/adapter/output/repository/inmemory"
 	inmemory_schema "github.com/dexfs/go-twitter-clone/adapter/output/repository/inmemory/schema"
-	"github.com/dexfs/go-twitter-clone/internal/core/usecase"
 	"github.com/dexfs/go-twitter-clone/pkg/database"
 	"github.com/gin-gonic/gin"
-	"log"
-	"time"
 )
 
 type AppServer struct {
@@ -17,8 +18,8 @@ type AppServer struct {
 }
 
 func NewRouter(addr string) *AppServer {
-	gin.SetMode(gin.DebugMode)
-	gin.ForceConsoleColor()
+	//gin.SetMode(gin.DebugMode)
+	//gin.ForceConsoleColor()
 	return &AppServer{
 		router: gin.Default(),
 		addr:   addr,
@@ -29,31 +30,25 @@ func (s *AppServer) Run() error {
 	s.router.SetTrustedProxies(nil)
 	db := s.initDatabase()
 	s.initRoutes(db)
-	return s.router.Run(s.addr)
+	return endless.ListenAndServe(s.addr, s.router)
 }
 
 func (s *AppServer) initRoutes(db *database.InMemoryDB) {
+	// repositories
 	userRepo := inmemory.NewInMemoryUserRepository(db)
 	postRepo := inmemory.NewInMemoryPostRepository(db)
-
+	// usecases
 	getUserInfoService, _ := usecase.NewGetUserInfoUseCase(userRepo)
 	getUserFeedUseCase, _ := usecase.NewGetUserFeedUseCase(userRepo, postRepo)
+	createPostUseCase, _ := usecase.NewCreatePostUseCase(postRepo, userRepo)
+	//controllers
+	usersController := adapter_http.NewUsersController(getUserInfoService, getUserFeedUseCase)
 
-	usersController := http.NewUsersController(getUserInfoService, getUserFeedUseCase)
-	//
+	postsController := adapter_http.NewPostsController(createPostUseCase)
+	// routes
 	s.router.GET("/users/:username/info", usersController.GetInfo)
 	s.router.GET("/users/:username/feed", usersController.GetFeed)
-	//
-	createPostUseCase, err := usecase.NewCreatePostUseCase(postRepo, userRepo)
-
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-
-	postsController := http.NewPostsController(createPostUseCase)
 	s.router.POST("/posts", postsController.CreatePost)
-
 }
 
 func (s *AppServer) initDatabase() *database.InMemoryDB {

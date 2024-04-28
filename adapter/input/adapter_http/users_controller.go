@@ -1,4 +1,4 @@
-package http
+package adapter_http
 
 import "C"
 import (

@@ -1,4 +1,4 @@
-package http
+package adapter_http
 
 import (
 	"github.com/dexfs/go-twitter-clone/adapter/input/model/request"
@@ -34,7 +34,7 @@ func (pc *postsController) CreatePost(c *gin.Context) {
 	})
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
 
