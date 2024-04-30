@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"errors"
 	"github.com/dexfs/go-twitter-clone/adapter/input/adapter_http"
 	"github.com/dexfs/go-twitter-clone/internal/core/usecase"
 	"github.com/fvbock/endless"
@@ -28,7 +29,10 @@ func NewRouter(addr string) *AppServer {
 
 func (s *AppServer) Run() error {
 	s.router.SetTrustedProxies(nil)
-	db := s.initDatabase()
+	db, err := s.initDatabase()
+	if err != nil {
+		return err
+	}
 	s.initRoutes(db)
 	return endless.ListenAndServe(s.addr, s.router)
 }
@@ -51,10 +55,10 @@ func (s *AppServer) initRoutes(db *database.InMemoryDB) {
 	s.router.POST("/posts", postsController.CreatePost)
 }
 
-func (s *AppServer) initDatabase() *database.InMemoryDB {
+func (s *AppServer) initDatabase() (*database.InMemoryDB, error) {
 	db := database.NewInMemoryDB()
 	if db == nil {
-		panic("failed to connect to database")
+		return nil, errors.New("database is nil")
 	}
 	initialUsers := make([]*inmemory_schema.UserSchema, 0)
 	initialUsers = append(initialUsers, &inmemory_schema.UserSchema{
@@ -72,5 +76,5 @@ func (s *AppServer) initDatabase() *database.InMemoryDB {
 
 	db.RegisterSchema(inmemory.USER_SCHEMA_NAME, initialUsers)
 	db.RegisterSchema(inmemory.POST_SCHEMA_NAME, []*inmemory_schema.PostSchema{})
-	return db
+	return db, nil
 }
