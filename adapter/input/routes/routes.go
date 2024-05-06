@@ -45,14 +45,18 @@ func (s *AppServer) initRoutes(db *database.InMemoryDB) {
 	getUserInfoService, _ := usecase.NewGetUserInfoUseCase(userRepo)
 	getUserFeedUseCase, _ := usecase.NewGetUserFeedUseCase(userRepo, postRepo)
 	createPostUseCase, _ := usecase.NewCreatePostUseCase(postRepo, userRepo)
+	createRepostUseCase, _ := usecase.NewCreateRepostUseCase(postRepo, userRepo)
+	createQuoteUseCase, _ := usecase.NewCreateQuoteUseCase(postRepo, userRepo)
 	//controllers
 	usersController := adapter_http.NewUsersController(getUserInfoService, getUserFeedUseCase)
 
-	postsController := adapter_http.NewPostsController(createPostUseCase)
+	postsController := adapter_http.NewPostsController(createPostUseCase, createRepostUseCase, createQuoteUseCase)
 	// routes
 	s.router.GET("/users/:username/info", usersController.GetInfo)
 	s.router.GET("/users/:username/feed", usersController.GetFeed)
 	s.router.POST("/posts", postsController.CreatePost)
+	s.router.POST("/posts/repost", postsController.CreateRepost)
+	s.router.POST("/posts/quote", postsController.CreateQuote)
 }
 
 func (s *AppServer) initDatabase() (*database.InMemoryDB, error) {

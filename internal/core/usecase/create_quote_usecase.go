@@ -23,7 +23,7 @@ func NewCreateQuoteUseCase(postPort output.PostPort, userPort output.UserPort) (
 	}, nil
 }
 
-func (uc *createQuoteUseCase) Execute(anInput *input.CreateQuoteUseCaseInput) (*domain.Post, *rest_errors.RestError) {
+func (uc *createQuoteUseCase) Execute(anInput input.CreateQuoteUseCaseInput) (*domain.Post, *rest_errors.RestError) {
 	user, err := uc.userPort.FindByID(anInput.UserID)
 	if err != nil {
 		return &domain.Post{}, rest_errors.NewBadRequestError(err.Error())
