@@ -18,7 +18,7 @@ func TestCreateQuotePostUseCase_WithNotFoundUser_ReturnsError(t *testing.T) {
 	postRepo := inmemory.NewInMemoryPostRepository(TestMocks.MockDB)
 	mockNotFoundUser := domain.NewUser("not_found_user")
 	createQuotePostUseCase, _ := usecase.NewCreateQuoteUseCase(postRepo, mockUserRepo)
-	useCaseInput := &input.CreateQuoteUseCaseInput{
+	useCaseInput := input.CreateQuoteUseCaseInput{
 		UserID: mockNotFoundUser.ID,
 		PostID: TestMocks.MockPostsSeed[0].ID,
 		Quote:  "not found user",
@@ -44,7 +44,7 @@ func TestCreateQuotePostUseCase_WithNotFoundPost_ReturnsError(t *testing.T) {
 	mockUserRepo := inmemory.NewInMemoryUserRepository(TestMocks.MockDB)
 	postRepo := inmemory.NewInMemoryPostRepository(TestMocks.MockDB)
 	createQuotePostUseCase, _ := usecase.NewCreateQuoteUseCase(postRepo, mockUserRepo)
-	useCaseInput := &input.CreateQuoteUseCaseInput{
+	useCaseInput := input.CreateQuoteUseCaseInput{
 		UserID: TestMocks.MockUserSeed[0].ID,
 		PostID: uuid.New().String(),
 		Quote:  "not found user",
@@ -80,7 +80,7 @@ func TestCreateQuotePostUseCase_WithValidInput_ReturnsPostID(t *testing.T) {
 	postRepo := inmemory.NewInMemoryPostRepository(TestMocks.MockDB)
 	createQuotePostUseCase, _ := usecase.NewCreateQuoteUseCase(postRepo, mockUserRepo)
 	mockOriginalPost := TestMocks.MockPostsSeed[0]
-	useCaseInput := &input.CreateQuoteUseCaseInput{
+	useCaseInput := input.CreateQuoteUseCaseInput{
 		UserID: mockQuoteUser.ID,
 		PostID: mockOriginalPost.ID,
 		Quote:  "New quote!",
