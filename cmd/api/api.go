@@ -22,7 +22,7 @@ func init() {
 		log.Fatal("database is nil")
 	}
 
-	initialUsers := make([]*inmemory_schema.UserSchema, 2)
+	initialUsers := make([]*inmemory_schema.UserSchema, 0)
 	initialUsers = append(initialUsers, &inmemory_schema.UserSchema{
 		ID:        "4cfe67a9-defc-42b9-8410-cb5086bec2f5",
 		Username:  "alucard",
