@@ -38,6 +38,48 @@ func helperDecodeJSON(body *bytes.Buffer, v interface{}) error {
 	return nil
 }
 
+func TestInvalidUserName(t *testing.T) {
+	var tests = []struct {
+		name      string
+		input     string
+		want      string
+		causesLen int
+	}{
+		{" username should be alphanumeric", "not@found", "Bad Request", 1},
+		{" username should be alphanumeric", "not_found", "Bad Request", 1},
+		{" username should have at least 5 characters", "nf", "Bad Request", 1},
+		{" username should have max 10 characters", "notfound123456789", "Bad Request", 1},
+	}
+	setUpTests()
+	dbMocks := mocks.GetTestMocks()
+	userRepo, _ := InitDependencies(dbMocks.MockDB)
+	getUserInfoService, _ := usecase.NewGetUserInfoUseCase(userRepo)
+	usersController := adapter_http.NewUsersController(getUserInfoService, nil)
+
+	router := routes.NewRouter(":8002")
+	router.Router.GET("/users/:username/info", usersController.GetInfo)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			wRecorder := httptest.NewRecorder()
+			url := fmt.Sprintf("/users/%s/info", tt.input)
+			req, _ := http.NewRequest("GET", url, nil)
+			router.Router.ServeHTTP(wRecorder, req)
+
+			got := new(rest_errors.RestError)
+
+			assert.Equal(t, http.StatusBadRequest, wRecorder.Code)
+			if err := helperDecodeJSON(wRecorder.Body, got); err != nil {
+				log.Fatal(err)
+			}
+
+			assert.EqualValues(t, tt.want, got.Message)
+			assert.Len(t, got.Causes, tt.causesLen)
+
+		})
+	}
+}
+
 func TestUserInfoResource_WithNoFoundUser_ReturnsErrorMessage(t *testing.T) {
 	setUpTests()
 	dbMocks := mocks.GetTestMocks()
