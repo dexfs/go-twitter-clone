@@ -24,5 +24,9 @@ Accept: application/json
 
 ###
 
+GET http://localhost:8001/ping
+Accept: application/json
+
+###
 
 
