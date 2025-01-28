@@ -5,6 +5,7 @@ import (
 	"github.com/dexfs/go-twitter-clone/internal/core/port/output"
 	"github.com/dexfs/go-twitter-clone/internal/core/usecase"
 	"github.com/fvbock/endless"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,6 +18,7 @@ func NewRouter(addr string) *AppServer {
 	//gin.SetMode(gin.DebugMode)
 	//gin.ForceConsoleColor()
 	r := gin.Default()
+	r.Use(cors.Default())
 	r.GET("/ping", func(c *gin.Context) {
 		c.String(200, "pong")
 	})
