@@ -1,0 +1,32 @@
+# curl --location 'http://localhost:8001/posts'
+#--header 'Content-Type: application/json'
+#--data '{
+#    "content": "Teste Post",
+#    "user_id": "4cfe67a9-defc-42b9-8410-cb5086bec2f5"
+#}'
+POST http://localhost:8001/posts
+Content-Type: application/json
+
+{
+    "content": "Teste Post",
+    "user_id": "4cfe67a9-defc-42b9-8410-cb5086bec2f5"
+}
+
+###
+
+GET http://localhost:8001/users/alucard/info
+Accept: application/json
+
+###
+
+GET http://localhost:8001/users/alucard/feed
+Accept: application/json
+
+###
+
+GET http://localhost:8001/ping
+Accept: application/json
+
+###
+
+
