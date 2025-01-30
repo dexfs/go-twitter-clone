@@ -6,6 +6,9 @@ import (
 	inmemory_schema "github.com/dexfs/go-twitter-clone/adapter/output/repository/inmemory/schema"
 	"github.com/dexfs/go-twitter-clone/internal/core/port/output"
 	"github.com/dexfs/go-twitter-clone/pkg/database"
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"log"
 	"time"
 )
@@ -17,6 +20,18 @@ var (
 )
 
 func init() {
+
+	m, err := migrate.New("file://migrations", "postgres://gouser:123456@localhost:5432/gotwitterclone?sslmode=disable")
+	if err != nil {
+		log.Fatal("Error on load migrations:", err)
+	}
+
+	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+		log.Fatal("Error on apply migrations:", err)
+	}
+
+	log.Println("Migrations applied")
+
 	db = database.NewInMemoryDB()
 	if db == nil {
 		log.Fatal("database is nil")
