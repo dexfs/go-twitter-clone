@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"github.com/dexfs/go-twitter-clone/adapter/input/model/rest_errors"
 	"github.com/dexfs/go-twitter-clone/internal/core/domain"
 	"github.com/dexfs/go-twitter-clone/internal/core/port/output"
@@ -23,7 +24,8 @@ func NewGetUserFeedUseCase(userPort output.UserPort, postPort output.PostPort) (
 }
 
 func (uc *getUserFeedUseCase) Execute(username string) ([]*domain.Post, *rest_errors.RestError) {
-	user, err := uc.userPort.ByUsername(username)
+	ctx := context.Background()
+	user, err := uc.userPort.ByUsername(ctx, username)
 	if err != nil {
 		return []*domain.Post{}, rest_errors.NewNotFoundError(err.Error())
 	}

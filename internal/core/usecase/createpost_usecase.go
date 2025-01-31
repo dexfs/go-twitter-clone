@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"github.com/dexfs/go-twitter-clone/adapter/input/model/rest_errors"
 	"github.com/dexfs/go-twitter-clone/internal/core/domain"
 	"github.com/dexfs/go-twitter-clone/internal/core/port/input"
@@ -21,12 +22,13 @@ func NewCreatePostUseCase(postPort output.PostPort, userPort output.UserPort) (*
 }
 
 func (uc *createPostUseCase) Execute(aInput input.CreatePostUseCaseInput) (*domain.Post, *rest_errors.RestError) {
+	ctx := context.Background()
 	hasReachedLimit := uc.postPort.HasReachedPostingLimitDay(aInput.UserID, 5) // @TODO mudar isso para vir das configurações
 	if hasReachedLimit {
 		return &domain.Post{}, rest_errors.NewBadRequestError("you reached your posts day limit")
 	}
 
-	user, err := uc.userPort.FindByID(aInput.UserID)
+	user, err := uc.userPort.FindByID(ctx, aInput.UserID)
 	if err != nil {
 		return &domain.Post{}, rest_errors.NewNotFoundError(err.Error())
 	}

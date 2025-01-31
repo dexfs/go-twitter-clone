@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"github.com/dexfs/go-twitter-clone/adapter/input/model/rest_errors"
 	"github.com/dexfs/go-twitter-clone/internal/core/domain"
 	"github.com/dexfs/go-twitter-clone/internal/core/port/input"
@@ -21,7 +22,8 @@ func NewCreateRepostUseCase(postPort output.PostPort, userPort output.UserPort) 
 }
 
 func (uc *createRepostUseCase) Execute(aInput input.CreateRepostUseCaseInput) (*domain.Post, *rest_errors.RestError) {
-	user, err := uc.userPort.FindByID(aInput.UserID)
+	ctx := context.Background()
+	user, err := uc.userPort.FindByID(ctx, aInput.UserID)
 
 	if err != nil {
 		return &domain.Post{}, rest_errors.NewBadRequestError(err.Error())

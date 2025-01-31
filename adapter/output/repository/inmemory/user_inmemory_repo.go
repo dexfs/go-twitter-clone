@@ -1,6 +1,7 @@
 package inmemory
 
 import (
+	"context"
 	"errors"
 	inmemory_schema "github.com/dexfs/go-twitter-clone/adapter/output/repository/inmemory/schema"
 	"github.com/dexfs/go-twitter-clone/internal/core/domain"
@@ -19,7 +20,7 @@ func NewInMemoryUserRepository(db *database.InMemoryDB) *inMemoryUserRepository 
 	}
 }
 
-func (r *inMemoryUserRepository) ByUsername(username string) (*domain.User, error) {
+func (r *inMemoryUserRepository) ByUsername(ctx context.Context, username string) (*domain.User, error) {
 	for _, currentUser := range r.getAll() {
 		if currentUser.Username == username {
 			return &domain.User{
@@ -34,7 +35,7 @@ func (r *inMemoryUserRepository) ByUsername(username string) (*domain.User, erro
 	return nil, errors.New("user not found")
 }
 
-func (r *inMemoryUserRepository) FindByID(id string) (*domain.User, error) {
+func (r *inMemoryUserRepository) FindByID(ctx context.Context, id string) (*domain.User, error) {
 	for _, currentUser := range r.getAll() {
 		if currentUser.ID == id {
 			return &domain.User{
