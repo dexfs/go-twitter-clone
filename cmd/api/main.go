@@ -9,19 +9,22 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/joho/godotenv"
 	"log"
+	"os"
 	"time"
 )
 
 var (
 	db       *database.InMemoryDB
+	pgDB     *database.PostgresDB
 	userRepo output.UserPort
 	postRepo output.PostPort
 )
 
 func init() {
-
-	m, err := migrate.New("file://migrations", "postgres://gouser:123456@localhost:5432/gotwitterclone?sslmode=disable")
+	err := godotenv.Load()
+	m, err := migrate.New("file://migrations", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal("Error on load migrations:", err)
 	}
@@ -33,6 +36,8 @@ func init() {
 	log.Println("Migrations applied")
 
 	db = database.NewInMemoryDB()
+	pgDB = database.NewPostgresDB()
+	pgDB.Version()
 	if db == nil {
 		log.Fatal("database is nil")
 	}
@@ -75,6 +80,7 @@ func (s *APIServer) Run() error {
 func main() {
 	log.Printf("Starting Application")
 	server := NewAPIServer("8001")
+	defer pgDB.Close()
 
 	if err := server.Run(); err != nil {
 		log.Fatal("Error starting server:", err)
