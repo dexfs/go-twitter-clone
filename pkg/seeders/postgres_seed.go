@@ -20,21 +20,21 @@ func (s *PostgresSeeder) UsersSeed(ctx context.Context) error {
 	batch := &pgx.Batch{}
 	initialUsers := make([]*postgres.UserSchema, 0)
 	initialUsers = append(initialUsers, &postgres.UserSchema{
-		ID:        "0194bd04-66e2-7cd8-b3d9-66eda709f2ee",
+		ID:        "01JJYY0V9AMD9656HT4BSV0ZEK",
 		Username:  "alucard",
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	})
 
 	initialUsers = append(initialUsers, &postgres.UserSchema{
-		ID:        "0194bd04-8eac-7e70-97cd-c526cdda3d6a",
+		ID:        "01JJYY1S0JY0ERC1VQ3EEFNJC7",
 		Username:  "alexander",
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	})
 
 	initialUsers = append(initialUsers, &postgres.UserSchema{
-		ID:        "0194bdb1-0588-7181-809e-a825badac714",
+		ID:        "01JJYY1Z0E3BMZQ0HFDH8A6NMT",
 		Username:  "seras_victoria",
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
