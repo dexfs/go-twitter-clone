@@ -6,3 +6,6 @@ build:
 
 start: build
 	./bin/api
+
+seed:
+	@go run cmd/seeds/main.go
