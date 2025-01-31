@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/jackc/pgx/v5"
 	"log"
@@ -23,14 +24,29 @@ func NewPostgresDB() *PostgresDB {
 	}
 }
 
-func (db *PostgresDB) Close() {
-	db.conn.Close(context.Background())
+func (db *PostgresDB) FindOne(ctx context.Context, query string, args ...any) pgx.Row {
+	return db.conn.QueryRow(ctx, query, args...)
 }
 
-func (db *PostgresDB) Version() {
+func (db *PostgresDB) Batch(ctx context.Context, batch *pgx.Batch, dataSize int) error {
+	br := db.conn.SendBatch(ctx, batch)
+	defer br.Close()
+	for range dataSize {
+		_, err := br.Exec()
+		if err != nil {
+			return errors.New("User seed failed: " + err.Error())
+		}
+	}
+	return nil
+}
+
+func (db *PostgresDB) Close(ctx context.Context) {
+	db.conn.Close(ctx)
+}
+
+func (db *PostgresDB) Version(ctx context.Context) {
 	var version string
-	err := db.conn.QueryRow(context.Background(), "SELECT version()").Scan(&version)
-	defer db.conn.Close(context.Background())
+	err := db.conn.QueryRow(ctx, "SELECT version()").Scan(&version)
 	if err != nil {
 		log.Fatal("Erro ao executar query:", err)
 	}

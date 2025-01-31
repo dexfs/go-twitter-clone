@@ -1,8 +1,11 @@
 package output
 
-import "github.com/dexfs/go-twitter-clone/internal/core/domain"
+import (
+	"context"
+	"github.com/dexfs/go-twitter-clone/internal/core/domain"
+)
 
 type UserPort interface {
-	ByUsername(username string) (*domain.User, error)
-	FindByID(id string) (*domain.User, error)
+	ByUsername(ctx context.Context, username string) (*domain.User, error)
+	FindByID(ctx context.Context, id string) (*domain.User, error)
 }
