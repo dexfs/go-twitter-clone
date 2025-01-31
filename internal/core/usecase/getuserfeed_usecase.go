@@ -23,8 +23,7 @@ func NewGetUserFeedUseCase(userPort output.UserPort, postPort output.PostPort) (
 	}, nil
 }
 
-func (uc *getUserFeedUseCase) Execute(username string) ([]*domain.Post, *rest_errors.RestError) {
-	ctx := context.Background()
+func (uc *getUserFeedUseCase) Execute(ctx context.Context, username string) ([]*domain.Post, *rest_errors.RestError) {
 	user, err := uc.userPort.ByUsername(ctx, username)
 	if err != nil {
 		return []*domain.Post{}, rest_errors.NewNotFoundError(err.Error())

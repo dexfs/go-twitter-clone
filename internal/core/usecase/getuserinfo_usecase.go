@@ -21,8 +21,7 @@ func NewGetUserInfoUseCase(userPort output.UserPort) (*getUserInfoUseCase, *rest
 	}, nil
 }
 
-func (s *getUserInfoUseCase) Execute(username string) (*domain.User, *rest_errors.RestError) {
-	ctx := context.Background()
+func (s *getUserInfoUseCase) Execute(ctx context.Context, username string) (*domain.User, *rest_errors.RestError) {
 	fmt.Sprintf("GetUserInfoService_Execute(%s)", username)
 	userInfoResponse, err := s.userPort.ByUsername(ctx, username)
 	if err != nil {
