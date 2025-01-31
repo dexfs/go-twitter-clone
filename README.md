@@ -23,16 +23,16 @@ https://dbdiagram.io/d/go-twitter-clone-660b4e8437b7e33fd741027f
 // users data
 const users = [
     {
-        id: '4cfe67a9-defc-42b9-8410-cb5086bec2f5',
+        id: '0194bd04-66e2-7cd8-b3d9-66eda709f2ee',
         username: 'alucard',
     },
     {
-        id: 'b8903f77-5d16-4176-890f-f597594ff952',
+        id: '0194bd04-8eac-7e70-97cd-c526cdda3d6a',
         username: 'alexander',
 
     },
     {
-        id: '75135a97-46be-405f-8948-0821290ca83e',
+        id: '0194bdb1-0588-7181-809e-a825badac714',
         username: 'seras_victoria',
     },
 ];
@@ -54,6 +54,6 @@ ___
 
 
 
-## Styleguide 
+## Styleguide
 
 [uber go style guide](https://github.com/alcir-junior-caju/uber-go-style-guide-pt-br)
