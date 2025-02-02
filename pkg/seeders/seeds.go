@@ -21,5 +21,11 @@ func Run() {
 	if err != nil {
 		log.Fatal("Error on seeding users: ", err)
 	}
-	log.Println("Users seeder applied")
+
+	err = pgSeeder.PostsSeed(ctxWithCancel)
+	if err != nil {
+		log.Fatal("Error on seeding posts: ", err)
+	}
+
+	log.Println("seeds applied")
 }
