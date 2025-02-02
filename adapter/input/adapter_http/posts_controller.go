@@ -32,7 +32,7 @@ func (pc *postsController) CreatePost(c *gin.Context) {
 		return
 	}
 
-	postDomain, err := pc.createPostUseCase.Execute(input.CreatePostUseCaseInput{
+	postDomain, err := pc.createPostUseCase.Execute(c, input.CreatePostUseCaseInput{
 		UserID:  createPostRequest.UserID,
 		Content: createPostRequest.Content,
 	})
@@ -56,7 +56,7 @@ func (pc *postsController) CreateRepost(c *gin.Context) {
 		return
 	}
 
-	postDomain, err := pc.createRepostUseCase.Execute(input.CreateRepostUseCaseInput{
+	postDomain, err := pc.createRepostUseCase.Execute(c, input.CreateRepostUseCaseInput{
 		PostID: createRequest.PostID,
 		UserID: createRequest.UserID,
 	})
@@ -80,7 +80,7 @@ func (pc *postsController) CreateQuote(c *gin.Context) {
 		return
 	}
 
-	postDomain, err := pc.createQuoteUseCase.Execute(input.CreateQuoteUseCaseInput{
+	postDomain, err := pc.createQuoteUseCase.Execute(c, input.CreateQuoteUseCaseInput{
 		PostID: createRequest.PostID,
 		UserID: createRequest.UserID,
 		Quote:  createRequest.Quote,
