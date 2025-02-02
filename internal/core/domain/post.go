@@ -3,6 +3,7 @@ package domain
 import (
 	"errors"
 	"github.com/google/uuid"
+	"github.com/oklog/ulid/v2"
 	"time"
 )
 
@@ -40,7 +41,7 @@ func NewPost(aNewPost NewPostInput) (*Post, error) {
 	}
 
 	return &Post{
-		ID:                     uuid.NewString(),
+		ID:                     ulid.Make().String(),
 		User:                   aNewPost.User,
 		Content:                aNewPost.Content,
 		CreatedAt:              time.Now(),
@@ -63,7 +64,7 @@ func NewRepost(aRepostInput NewRepostQuoteInput) (*Post, error) {
 	}
 
 	return &Post{
-		ID:                     uuid.NewString(),
+		ID:                     ulid.Make().String(),
 		User:                   aRepostInput.User,
 		CreatedAt:              time.Now(),
 		IsQuote:                false,
