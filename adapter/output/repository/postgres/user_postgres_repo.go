@@ -29,7 +29,7 @@ func (r *PostgresUserRepository) ByUsername(ctx context.Context, username string
 }
 
 func (r *PostgresUserRepository) FindByID(ctx context.Context, id string) (*domain.User, error) {
-	query := "SELECT * FROM users WHERE id = $1"
+	query := "SELECT * FROM users WHERE user_id = $1"
 	row := r.db.FindOne(ctx, query, id)
 
 	var user domain.User
