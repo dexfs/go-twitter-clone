@@ -31,7 +31,7 @@ func (uc *usersController) GetInfo(c *gin.Context) {
 		c.JSON(errRest.Code, errRest)
 		return
 	}
-	userFeedDomain, err := uc.getUserInfoUseCase.Execute(userInfoRequest.Username)
+	userFeedDomain, err := uc.getUserInfoUseCase.Execute(c, userInfoRequest.Username)
 	if err != nil {
 		c.JSON(err.Code, err)
 		return
@@ -53,7 +53,7 @@ func (uc *usersController) GetFeed(c *gin.Context) {
 		return
 	}
 
-	userFeedDomain, err := uc.getUserFeedUseCase.Execute(userRequest.Username)
+	userFeedDomain, err := uc.getUserFeedUseCase.Execute(c, userRequest.Username)
 	if err != nil {
 		c.JSON(err.Code, err)
 		return

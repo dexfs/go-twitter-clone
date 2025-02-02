@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"fmt"
 	"github.com/dexfs/go-twitter-clone/adapter/input/model/rest_errors"
 	"github.com/dexfs/go-twitter-clone/internal/core/domain"
@@ -20,9 +21,9 @@ func NewGetUserInfoUseCase(userPort output.UserPort) (*getUserInfoUseCase, *rest
 	}, nil
 }
 
-func (s *getUserInfoUseCase) Execute(username string) (*domain.User, *rest_errors.RestError) {
+func (s *getUserInfoUseCase) Execute(ctx context.Context, username string) (*domain.User, *rest_errors.RestError) {
 	fmt.Sprintf("GetUserInfoService_Execute(%s)", username)
-	userInfoResponse, err := s.userPort.ByUsername(username)
+	userInfoResponse, err := s.userPort.ByUsername(ctx, username)
 	if err != nil {
 		return nil, rest_errors.NewNotFoundError(err.Error())
 	}

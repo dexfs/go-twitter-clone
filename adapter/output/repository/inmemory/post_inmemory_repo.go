@@ -1,6 +1,7 @@
 package inmemory
 
 import (
+	"context"
 	"errors"
 	"github.com/dexfs/go-twitter-clone/adapter/output/mappers"
 	inmemory_schema "github.com/dexfs/go-twitter-clone/adapter/output/repository/inmemory/schema"
@@ -22,7 +23,7 @@ func NewInMemoryPostRepository(db *database.InMemoryDB) *inMemoryPostRepository 
 	}
 }
 
-func (r *inMemoryPostRepository) CreatePost(aPost *domain.Post) error {
+func (r *inMemoryPostRepository) CreatePost(ctx context.Context, aPost *domain.Post) error {
 	r.insert(&inmemory_schema.PostSchema{
 		ID:                     aPost.ID,
 		UserID:                 aPost.User.ID,
@@ -38,7 +39,7 @@ func (r *inMemoryPostRepository) CreatePost(aPost *domain.Post) error {
 	return nil
 }
 
-func (r *inMemoryPostRepository) HasReachedPostingLimitDay(aUserId string, aLimit uint64) bool {
+func (r *inMemoryPostRepository) HasReachedPostingLimitDay(ctx context.Context, aUserId string, aLimit uint64) bool {
 	var count = uint64(0)
 
 	for _, currentData := range r.getAll() {
@@ -57,7 +58,7 @@ func (r *inMemoryPostRepository) HasReachedPostingLimitDay(aUserId string, aLimi
 	}
 }
 
-func (r *inMemoryPostRepository) AllByUserID(aUser *domain.User) []*domain.Post {
+func (r *inMemoryPostRepository) AllByUserID(ctx context.Context, aUser *domain.User) []*domain.Post {
 	var feed []*domain.Post
 	for _, currentData := range r.getAll() {
 		if currentData.UserID == aUser.ID {
@@ -68,7 +69,7 @@ func (r *inMemoryPostRepository) AllByUserID(aUser *domain.User) []*domain.Post 
 	return feed
 }
 
-func (r *inMemoryPostRepository) FindByID(aPostID string) (*domain.Post, error) {
+func (r *inMemoryPostRepository) FindByID(ctx context.Context, aPostID string) (*domain.Post, error) {
 	for _, currentData := range r.getAll() {
 		if currentData.ID == aPostID {
 			var postUser *domain.User
@@ -84,7 +85,7 @@ func (r *inMemoryPostRepository) FindByID(aPostID string) (*domain.Post, error) 
 	return nil, errors.New("post not found")
 }
 
-func (r *inMemoryPostRepository) HasPostBeenRepostedByUser(postID string, userID string) bool {
+func (r *inMemoryPostRepository) HasPostBeenRepostedByUser(ctx context.Context, postID string, userID string) bool {
 	for _, vPost := range r.getAll() {
 		if vPost.IsRepost {
 			if vPost.UserID == userID && vPost.OriginalPostID == postID {
