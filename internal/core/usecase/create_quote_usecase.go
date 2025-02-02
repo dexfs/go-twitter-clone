@@ -24,14 +24,13 @@ func NewCreateQuoteUseCase(postPort output.PostPort, userPort output.UserPort) (
 	}, nil
 }
 
-func (uc *createQuoteUseCase) Execute(anInput input.CreateQuoteUseCaseInput) (*domain.Post, *rest_errors.RestError) {
-	ctx := context.Background()
+func (uc *createQuoteUseCase) Execute(ctx context.Context, anInput input.CreateQuoteUseCaseInput) (*domain.Post, *rest_errors.RestError) {
 	user, err := uc.userPort.FindByID(ctx, anInput.UserID)
 	if err != nil {
 		return &domain.Post{}, rest_errors.NewBadRequestError(err.Error())
 	}
 
-	post, err := uc.postPort.FindByID(anInput.PostID)
+	post, err := uc.postPort.FindByID(ctx, anInput.PostID)
 	if err != nil {
 		return &domain.Post{}, rest_errors.NewBadRequestError(err.Error())
 	}
@@ -46,7 +45,11 @@ func (uc *createQuoteUseCase) Execute(anInput input.CreateQuoteUseCaseInput) (*d
 		return &domain.Post{}, rest_errors.NewBadRequestError(err.Error())
 	}
 
-	uc.postPort.CreatePost(newQuotePost)
+	err = uc.postPort.CreatePost(ctx, newQuotePost)
+
+	if err != nil {
+		return &domain.Post{}, rest_errors.NewBadRequestError(err.Error())
+	}
 
 	return newQuotePost, nil
 }

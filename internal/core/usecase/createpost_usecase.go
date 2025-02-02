@@ -21,9 +21,8 @@ func NewCreatePostUseCase(postPort output.PostPort, userPort output.UserPort) (*
 	return &createPostUseCase{postPort: postPort, userPort: userPort}, nil
 }
 
-func (uc *createPostUseCase) Execute(aInput input.CreatePostUseCaseInput) (*domain.Post, *rest_errors.RestError) {
-	ctx := context.Background()
-	hasReachedLimit := uc.postPort.HasReachedPostingLimitDay(aInput.UserID, 5) // @TODO mudar isso para vir das configurações
+func (uc *createPostUseCase) Execute(ctx context.Context, aInput input.CreatePostUseCaseInput) (*domain.Post, *rest_errors.RestError) {
+	hasReachedLimit := uc.postPort.HasReachedPostingLimitDay(ctx, aInput.UserID, 5) // @TODO mudar isso para vir das configurações
 	if hasReachedLimit {
 		return &domain.Post{}, rest_errors.NewBadRequestError("you reached your posts day limit")
 	}
@@ -41,7 +40,10 @@ func (uc *createPostUseCase) Execute(aInput input.CreatePostUseCaseInput) (*doma
 		return &domain.Post{}, rest_errors.NewBadRequestError(err.Error())
 	}
 
-	uc.postPort.CreatePost(aNewPost)
+	err = uc.postPort.CreatePost(ctx, aNewPost)
+	if err != nil {
+		return &domain.Post{}, rest_errors.NewInternalServerError(err.Error())
+	}
 
 	return aNewPost, nil
 }

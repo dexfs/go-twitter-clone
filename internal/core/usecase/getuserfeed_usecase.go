@@ -29,6 +29,6 @@ func (uc *getUserFeedUseCase) Execute(ctx context.Context, username string) ([]*
 		return []*domain.Post{}, rest_errors.NewNotFoundError(err.Error())
 	}
 
-	posts := uc.postPort.AllByUserID(user)
+	posts := uc.postPort.AllByUserID(ctx, user)
 	return posts, nil
 }

@@ -1,6 +1,7 @@
 package input
 
 import (
+	"context"
 	"github.com/dexfs/go-twitter-clone/adapter/input/model/rest_errors"
 	"github.com/dexfs/go-twitter-clone/internal/core/domain"
 )
@@ -11,5 +12,5 @@ type CreatePostUseCaseInput struct {
 }
 
 type CreatePostUseCase interface {
-	Execute(aInput CreatePostUseCaseInput) (*domain.Post, *rest_errors.RestError)
+	Execute(ctx context.Context, aInput CreatePostUseCaseInput) (*domain.Post, *rest_errors.RestError)
 }
