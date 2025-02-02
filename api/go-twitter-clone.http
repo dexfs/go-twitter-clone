@@ -9,7 +9,7 @@ Content-Type: application/json
 
 {
     "content": "Teste Post",
-    "user_id": "4cfe67a9-defc-42b9-8410-cb5086bec2f5"
+    "user_id": "01JJYY1S0JY0ERC1VQ3EEFNJC7"
 }
 
 ###
@@ -19,7 +19,7 @@ Accept: application/json
 
 ###
 
-GET http://localhost:8001/users/alucard/feed
+GET http://localhost:8001/users/alexander/feed
 Accept: application/json
 
 ###
